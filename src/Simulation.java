@@ -177,3 +177,45 @@ class Mud extends Field {
         this.setMovement_modifier(0.5);
     }
 }
+class Grass extends Field{
+    Grass(int x,int y){
+        this.setBlocks(false);
+        this.setX_position(x);
+        this.setY_position(y);
+        this.setMovement_modifier(1);
+    }
+}
+class Gate extends Field{
+    private int health;
+
+    Gate(int x,int y,int health){
+        this.setBlocks(true);
+        this.setX_position(x);
+        this.setY_position(y);
+        this.setMovement_modifier(0);
+        this.setHealth(500);
+    }
+    public void setHealth(int health){
+        this.health = health;
+    }
+    public int getHealth(){
+        return this.health;
+    }
+}
+class Wall extends Field{
+    private int health;
+
+    Wall(int x,int y,int health){
+        this.setBlocks(true);
+        this.setX_position(x);
+        this.setY_position(y);
+        this.setMovement_modifier(0);
+        this.setHealth(1500);
+    }
+    public void setHealth(int health){
+        this.health = health;
+    }
+    public int getHealth(){
+        return this.health;
+    }
+}
