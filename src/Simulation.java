@@ -12,6 +12,7 @@ abstract class Soldier {
 
     private int x_position;
     private int y_position;
+    private boolean defender;
 
     protected void setHealth(int newHealth) {
         this.health = newHealth;
@@ -21,6 +22,9 @@ abstract class Soldier {
     }
     protected void setMovement(int newMovement) {
         this.movement = newMovement;
+    }
+    protected void setDefender(boolean defender){
+        this.defender = defender;
     }
     protected void setRange(int newRange) {
         this.range = newRange;
@@ -43,6 +47,9 @@ abstract class Soldier {
     protected int getRange() {
         return this.range;
     }
+    protected boolean getArmyType(){
+        return this.defender;
+    }
     protected int getX_position() {
         return this.x_position;
     }
@@ -62,6 +69,37 @@ class Knight extends Soldier implements AttackCommand{
     }
     @Override
     public void attack(Soldier enemy) {
+        enemy.setHealth(enemy.getHealth()-this.getPower());
+    }
+}
+class Ram extends Soldier{
+    public Ram(int x, int y) {
+        this.setPower(50+50*getMovement());
+        this.setHealth(250);
+        //tu trzeba zeby sie rozpedzal
+        this.setMovement(3);
+        this.setRange(2);
+        this.setX_position(x);
+        this.setY_position(y);
+        this.setDefender(false);
+    }
+
+    public void attack(Gate enemy) {
+        enemy.setHealth(enemy.getHealth()-this.getPower());
+    }
+}
+class Catapult extends Soldier{
+    public Catapult(int x, int y) {
+        this.setPower(150);
+        this.setHealth(250);
+        this.setMovement(2);
+        this.setRange(15);
+        this.setX_position(x);
+        this.setY_position(y);
+        this.setDefender(false);
+    }
+
+    public void attack(Wall enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
 }
