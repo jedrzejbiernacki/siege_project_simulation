@@ -51,7 +51,7 @@ abstract class Soldier {
     }
 }
 
-class Knight extends Soldier{
+class Knight extends Soldier implements AttackCommand{
     public Knight(int x, int y) {
         this.setPower(27);
         this.setHealth(130);
@@ -60,12 +60,12 @@ class Knight extends Soldier{
         this.setX_position(x);
         this.setY_position(y);
     }
-
+    @Override
     public void attack(Soldier enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
 }
-class Archer extends Soldier{
+class Archer extends Soldier implements AttackCommand{
     public Archer(int x, int y) {
         this.setPower(17);
         this.setHealth(100);
@@ -74,12 +74,13 @@ class Archer extends Soldier{
         this.setX_position(x);
         this.setY_position(y);
     }
+    @Override
     public void attack(Soldier enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
 
 }
-class Horseman extends Soldier{
+class Horseman extends Soldier implements AttackCommand{
     public Horseman(int x, int y) {
         this.setPower(37);
         this.setHealth(150);
@@ -88,6 +89,7 @@ class Horseman extends Soldier{
         this.setX_position(x);
         this.setY_position(y);
     }
+    @Override
     public void attack(Soldier enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
