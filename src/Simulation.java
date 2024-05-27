@@ -26,7 +26,7 @@ abstract class Soldier {
         this.range = newRange;
     }
     private void setX_position(int newX_position) {
-        this.x_position = x_position;
+        this.x_position = newX_position;
     }
     private void setY_position(int newY_position) {
         this.y_position = newY_position;
@@ -42,6 +42,12 @@ abstract class Soldier {
     }
     private int getRange() {
         return this.range;
+    }
+    private int getX_position() {
+        return this.x_position;
+    }
+    private int getY_position() {
+        return this.y_position;
     }
 }
 
