@@ -13,44 +13,76 @@ abstract class Soldier {
     private int x_position;
     private int y_position;
 
-    private void setHealth(int newHealth) {
+    protected void setHealth(int newHealth) {
         this.health = newHealth;
     }
-    private void setPower(int newPower) {
+    protected void setPower(int newPower) {
         this.power = newPower;
     }
-    private void setMovement(int newMovement) {
+    protected void setMovement(int newMovement) {
         this.movement = newMovement;
     }
-    private void setRange(int newRange) {
+    protected void setRange(int newRange) {
         this.range = newRange;
     }
-    private void setX_position(int newX_position) {
+    protected void setX_position(int newX_position) {
         this.x_position = newX_position;
     }
-    private void setY_position(int newY_position) {
+    protected void setY_position(int newY_position) {
         this.y_position = newY_position;
     }
-    private int getHealth() {
+    protected int getHealth() {
         return this.health;
     }
-    private int getPower() {
+    protected int getPower() {
         return this.power;
     }
-    private int getMovement() {
+    protected int getMovement() {
         return this.movement;
     }
-    private int getRange() {
+    protected int getRange() {
         return this.range;
     }
-    private int getX_position() {
+    protected int getX_position() {
         return this.x_position;
     }
-    private int getY_position() {
+    protected int getY_position() {
         return this.y_position;
     }
 }
 
 class Knight extends Soldier{
+    public Knight() {
+        this.setPower(27);
+        this.setHealth(130);
+        this.setMovement(5);
+        this.setRange(2);
+    }
 
+    public void attack(Soldier enemy) {
+        enemy.setHealth(enemy.getHealth()-this.getPower());
+    }
+}
+class Archer extends Soldier{
+    public Archer() {
+        this.setPower(17);
+        this.setHealth(100);
+        this.setMovement(6);
+        this.setRange(10);
+    }
+    public void attack(Soldier enemy) {
+        enemy.setHealth(enemy.getHealth()-this.getPower());
+    }
+
+}
+class Horseman extends Soldier{
+    public Horseman() {
+        this.setPower(37);
+        this.setHealth(150);
+        this.setMovement(10);
+        this.setRange(3);
+    }
+    public void attack(Soldier enemy) {
+        enemy.setHealth(enemy.getHealth()-this.getPower());
+    }
 }
