@@ -12,13 +12,9 @@ abstract class Soldier {
 
     private int x_position;
     private int y_position;
-    private boolean defender;
 
     protected void setHealth(int newHealth) {
         this.health = newHealth;
-    }
-    protected void setDefender(boolean defender){
-        this.defender = defender;
     }
     protected void setPower(int newPower) {
         this.power = newPower;
@@ -53,9 +49,6 @@ abstract class Soldier {
     protected int getY_position() {
         return this.y_position;
     }
-    protected boolean get_defender(){
-        return this.defender;
-    }
 }
 
 class Knight extends Soldier{
@@ -68,36 +61,6 @@ class Knight extends Soldier{
         this.setY_position(y);
     }
 
-    public void attack(Soldier enemy) {
-        enemy.setHealth(enemy.getHealth()-this.getPower());
-    }
-}
-class Ram extends Soldier{
-    public Ram(int x, int y) {
-        this.setPower(50+50*getMovement());
-        this.setHealth(250);
-        //tu ma byc jeszcze rozpedzanie sie Rama
-        this.setMovement(3);
-        this.setRange(2);
-        this.setDefender(false);
-        this.setX_position(x);
-        this.setY_position(y);
-    }
-    //tu zamiast enemy ma byc gate
-    public void attack(Soldier enemy) {
-        enemy.setHealth(enemy.getHealth()-this.getPower());
-    }
-}
-class Catapult extends Soldier{
-    public Catapult(int x, int y) {
-        this.setPower(150);
-        this.setHealth(250);
-        this.setMovement(2);
-        this.setRange(15);
-        this.setX_position(x);
-        this.setY_position(y);
-    }
-    //tu zamiast enemy ma byc wall
     public void attack(Soldier enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
