@@ -1,8 +1,48 @@
+import java.util.Scanner;
+
 public class Simulation {
     public static void main(String[] args) {
 
-    }
+        Horseman a = new Horseman(1,1); //Soldier 1
+        Archer b = new Archer(2,2); //Soldier 2
 
+//        while(true) {
+//            a.attack(b);
+//
+//            if(b.getHealth() < 0) {
+//                System.out.println("Soldier 2 is dead.");
+//                break;
+//            }
+//            b.attack(a);
+//            if (a.getHealth() < 0) {
+//                System.out.println("Soldier 1 is dead.");
+//                break;
+//            }
+//        }
+        boolean over = false;
+        while(true) {
+
+            for (int i = 15; i != 0; i--) {
+                if (a.getRange() >= i) {
+                    a.attack(b);
+                    if(b.getHealth() < 0) {
+                        System.out.println("Soldier 2 is dead.");
+                        over = true;
+                        break;
+                    }
+                }
+                if (b.getRange() >= i) {
+                    b.attack(a);
+                    if (a.getHealth() < 0) {
+                        System.out.println("Soldier 1 is dead.");
+                        over = true;
+                        break;
+                    }
+                }
+            }
+            if(over) break;
+        }
+    }
 }
 
 abstract class Soldier {
@@ -57,7 +97,6 @@ abstract class Soldier {
     protected int getY_position() {
         return this.y_position;
     }
-    protected
 }
 
 class Knight extends Soldier implements AttackCommand{
