@@ -1,7 +1,8 @@
 public class Simulation {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+
     }
+
 }
 
 abstract class Soldier {
@@ -56,6 +57,7 @@ abstract class Soldier {
     protected int getY_position() {
         return this.y_position;
     }
+    protected
 }
 
 class Knight extends Soldier implements AttackCommand{
@@ -117,6 +119,36 @@ class Archer extends Soldier implements AttackCommand{
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
 
+}
+class Leader extends Soldier implements AttackCommand{
+    private int auraRange;
+    public Leader(int x,int y,int auraRange){
+        this.setPower(50);
+        this.setHealth(200);
+        this.setMovement(5);
+        this.setRange(2);
+        this.setX_position(x);
+        this.setY_position(y);
+        this.auraRange = auraRange;
+    }
+    @Override
+    public void attack(Soldier enemy) {
+        enemy.setHealth(enemy.getHealth()-this.getPower());
+    }
+}
+class Medic extends Soldier implements AttackCommand{
+    public Medic(int x,int y){
+        this.setPower(-20);
+        this.setHealth(80);
+        this.setMovement(6);
+        this.setRange(3);
+        this.setX_position(x);
+        this.setY_position(y);
+    }
+    @Override
+    public void attack(Soldier ally) {
+        ally.setHealth(ally.getHealth()-this.getPower());
+    }
 }
 class Horseman extends Soldier implements AttackCommand{
     public Horseman(int x, int y) {
@@ -221,4 +253,9 @@ class Wall extends Field{
     public int getHealth(){
         return this.health;
     }
+}
+abstract class Board{
+    protected int width;
+    protected int height;
+    protected int iterations;
 }
