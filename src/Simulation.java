@@ -279,7 +279,7 @@ class Gate extends Field{
 class Wall extends Field{
     private int health;
 
-    Wall(int x,int y,int health){
+    Wall(int x,int y){
         this.setBlocks(true);
         this.setX_position(x);
         this.setY_position(y);
@@ -297,4 +297,78 @@ abstract class Board{
     protected int width;
     protected int height;
     protected int iterations;
+    protected int type;
+    protected Field[][] fields;
+
+    public Board(int width,int height,int iterations,int type){
+        this.height=height;
+        this.width=width;
+        this.iterations=iterations;
+        this.type=type;
+        this.fields = new Field[width][height];
+    }
+
+    public Field[][] boardType(int type,int width,int height){
+        if(width<100||height<100){
+            System.out.println("Minimalne wymiary planszy to 100x100");
+            return null;
+        }
+
+        switch (type) {
+            case 1:
+                return boardType1(type,width,height);
+
+            case 2:
+                return boardType1(type,width,height);
+
+            case 3:
+                return boardType1(type,width,height);
+
+            default:
+                System.out.println("Podaj numer od 1 do 3");
+                return null;
+
+        }
+    }
+    public Field[][] initialize(int type,int width,int height){
+        for(int i = 0;i<height;i++){
+            for(int j = 0;j<width;j++){
+                fields[i][j] = new Grass(i,j);
+            }
+        }
+        return fields;
+    }
+    public Field[][] boardType1(int type,int width,int height){
+        fields = initialize(type,width,height);
+        for (int i = 0; i < width / 4; i++) {
+            fields[height / 4][i] = new Wall(height/4,i);
+            fields[3 * height / 4][i] = new Wall(height*3/4,i);
+        }
+        for(int i = height/8+1;i<height/4;i++){
+            fields[i][width/4] = new Wall(i,width/4);
+            fields[i+5*height/8][width/4] = new Wall(i+5*height/8,width/4);
+        }
+        for(int i = width/4;i<width*5/12;i++){
+            fields[height / 8][i] = new Wall(height/8,i);
+            fields[7*height/8][i] = new Wall(height*7/8,i);
+        }
+        for(int i = height/8+1;i<height/4;i++){
+            fields[i][width*5/12] = new Wall(i,width*5/12);
+            fields[i+5*height/8][width*5/12] = new Wall(i+height*5/8,width*5/12);
+        }
+        for(int i = width/4;i<width*5/12;i++){
+            fields[height / 4][i] = new Wall(height/4,i);
+            fields[3 * height / 4][i] = new Wall(height*3/4,i);
+        }
+        for(int i = height/4;i<height*3/4;i++){
+            fields[i][width/4] = new Wall(i,width/4);
+        }
+        return fields;
+    }
+    /*public Field[][] boardType2(int type,int width,int height){
+
+    }*/
+    /*public Field[][] boardType3(int type,int width,int height){
+
+    }*/
 }
