@@ -15,17 +15,17 @@ public class SimulationGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Create the board
+
         board = new Board(100, 100, 10, 1) {
-            // Implement abstract methods if needed
+
         };
         board.fields = board.boardType(1, 100, 100); // Choose board type 1 for simplicity
 
-        // Create the board panel
+
         boardPanel = new JPanel(new GridLayout(board.height, board.width));
         initializeBoard();
 
-        // Create the start button
+
         startButton = new JButton("Start Simulation");
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -34,12 +34,12 @@ public class SimulationGUI extends JFrame {
             }
         });
 
-        // Create the output area
+
         outputArea = new JTextArea();
         outputArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(outputArea);
 
-        // Add components to the frame
+
         add(boardPanel, BorderLayout.CENTER);
         add(startButton, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.SOUTH);
@@ -69,7 +69,7 @@ public class SimulationGUI extends JFrame {
     }
 
     private void startSimulation() {
-        // Replace with the actual simulation code
+
         Horseman a = new Horseman(1, 1); // Soldier 1
         Archer b = new Archer(2, 2); // Soldier 2
 
