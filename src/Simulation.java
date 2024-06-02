@@ -367,13 +367,17 @@ abstract class Board{
         }
         fields[height/2][width/4] = new Gate(height/2,width/4);
         fields[height/2-1][width/4] = new Gate(height/2-1,width/4);
-        for(int i = 0;i<width*height/60;i++){
-            int y = rand.nextInt(width/4+4,width-3);
+        for(int i = 0;i<width*height/75;i++){
+            int y = rand.nextInt(width*5/12+2,width-3);
             int x = rand.nextInt(1,height-1);
-            if(!(fields[x+1][y]instanceof Rocks&&fields[x-1][y]instanceof Rocks&&fields[x][y-1]instanceof Rocks&&fields[x][y+1]instanceof Rocks&&fields[x+1][y+1]instanceof Rocks&&fields[x+1][y-1]instanceof Rocks&&fields[x-1][y-1]instanceof Rocks&&fields[x-1][y+1]instanceof Rocks)){
+            if(!(fields[x+1][y]instanceof Rocks||fields[x-1][y]instanceof Rocks||fields[x][y-1]instanceof Rocks||fields[x][y+1]instanceof Rocks||fields[x+1][y+1]instanceof Rocks||fields[x+1][y-1]instanceof Rocks||fields[x-1][y-1]instanceof Rocks||fields[x-1][y+1]instanceof Rocks)){
                 fields[x][y] = new Rocks(x,y);
             }
-
+        }
+        for(int i = 0;i<width*height/50;i++){
+            int y = rand.nextInt(width*5/12+2,width-3);
+            int x = rand.nextInt(1,height-1);
+            if(!(fields[x][y]instanceof Rocks)) fields[x][y] = new Mud(x,y);
         }
 
         return fields;
@@ -408,17 +412,49 @@ abstract class Board{
         }
         fields[height/2][width/4] = new Gate(height/2,width/4);
         fields[height/2-1][width/4] = new Gate(height/2-1,width/4);
-        for(int i = 0;i<width*height/100;i++){
+        for(int i = 0;i<width*height/25;i++){
             int y = rand.nextInt(width/4+4,width-3);
             int x = rand.nextInt(1,height-1);
-            if(!(fields[x+1][y]instanceof Rocks&&fields[x-1][y]instanceof Rocks&&fields[x][y-1]instanceof Rocks&&fields[x][y+1]instanceof Rocks&&fields[x+1][y+1]instanceof Rocks&&fields[x+1][y-1]instanceof Rocks&&fields[x-1][y-1]instanceof Rocks&&fields[x-1][y+1]instanceof Rocks)){
+            if(!(fields[x+1][y]instanceof Rocks||fields[x-1][y]instanceof Rocks||fields[x][y-1]instanceof Rocks||fields[x][y+1]instanceof Rocks||fields[x+1][y+1]instanceof Rocks||fields[x+1][y-1]instanceof Rocks||fields[x-1][y-1]instanceof Rocks||fields[x-1][y+1]instanceof Rocks)){
                 fields[x][y] = new Rocks(x,y);
             }
 
         }
+        for(int i = 0;i<width*height/150;i++){
+            int y = rand.nextInt(width/4+4,width-3);
+            int x = rand.nextInt(1,height-1);
+            if(!(fields[x][y]instanceof Rocks)) fields[x][y] = new Mud(x,y);
+        }
         return fields;
     }
-    /*public Field[][] boardType3(int type,int width,int height){
+    public Field[][] boardType3(int type,int width,int height) {
+        fields = initialize(type, width, height);
+        Random rand = new Random();
 
-    }*/
+        for (int i = 0; i < width / 4 + 1; i++) {
+            fields[height / 4][i] = new Wall(height / 4, i);
+            fields[3 * height / 4][i] = new Wall(height * 3 / 4, i);
+        }
+        for (int i = height / 4; i < height * 3 / 4 + 1; i++) {
+            int j = i - 3;
+            int k = i + 3;
+            fields[i][width / 4] = new Wall(i, width / 4);
+
+        }
+        fields[height / 2][width / 4] = new Gate(height / 2, width / 4);
+        fields[height / 2 - 1][width / 4] = new Gate(height / 2 - 1, width / 4);
+        for (int i = 0; i < width * height / 50; i++) {
+            int y = rand.nextInt(width / 4 + 4, width - 3);
+            int x = rand.nextInt(1, height - 1);
+            if (!(fields[x + 1][y] instanceof Rocks || fields[x - 1][y] instanceof Rocks || fields[x][y - 1] instanceof Rocks || fields[x][y + 1] instanceof Rocks || fields[x + 1][y + 1] instanceof Rocks || fields[x + 1][y - 1] instanceof Rocks || fields[x - 1][y - 1] instanceof Rocks || fields[x - 1][y + 1] instanceof Rocks)) {
+                fields[x][y] = new Rocks(x, y);
+            }
+        }
+        for(int i = 0;i<width*height/10;i++){
+            int y = rand.nextInt(width/4+4,width-3);
+            int x = rand.nextInt(1,height-1);
+            if(!(fields[x][y]instanceof Rocks)) fields[x][y] = new Mud(x,y);
+        }
+        return fields;
+    }
 }
