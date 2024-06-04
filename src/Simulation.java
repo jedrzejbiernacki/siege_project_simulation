@@ -1,5 +1,6 @@
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+
+import static java.lang.Math.sqrt;
 
 public class Simulation {
     public static void main(String[] args) {
@@ -52,8 +53,8 @@ abstract class Soldier {
     private int movement;
     private int range;
 
-    private int x_position;
-    private int y_position;
+    public int x_position;
+    public int y_position;
     private boolean defender;
 
     protected void setHealth(int newHealth) {
@@ -98,6 +99,11 @@ abstract class Soldier {
     protected int getY_position() {
         return this.y_position;
     }
+    protected boolean isAlive() {
+        return this.health > 0;
+    }
+
+    public void attack(Soldier target) {}
 }
 
 class Knight extends Soldier implements AttackCommand{
@@ -458,3 +464,79 @@ abstract class Board{
         return fields;
     }
 }
+
+class MovementLogic {
+    public static void move_attacker(Soldier unit, Field[][] board) {
+
+        // Decide next move based on relative position of unit B
+        if (unit.getX_position() < Army.defenders_average_position[0] && !(board[unit.getX_position() + 1][unit.getY_position()]instanceof Rocks)) {
+            unit.x_position++;
+        } else if (unit.getX_position() > Army.defenders_average_position[0] && !(board[unit.getX_position() - 1][unit.getY_position()]instanceof Rocks)) {
+            unit.x_position--;
+        } else if (unit.getY_position() < Army.defenders_average_position[1] && !(board[unit.getX_position()][unit.getY_position() + 1]instanceof Rocks)) {
+            unit.y_position++;
+        } else if (unit.getY_position() > Army.defenders_average_position[1] && !(board[unit.getX_position()][unit.getY_position() - 1]instanceof Rocks )) {
+            unit.y_position--;
+        }
+    }
+
+    public static boolean check_for_enemies(Soldier unit, Army army) {
+        for (int i = 0; i != army.getAlive_soldiers().size(); i++) {
+            if (unit.getRange() >= sqrt((army.getAlive_soldiers().get(i).x_position - unit.x_position)*(army.getAlive_soldiers().get(i).x_position - unit.x_position) + (army.getAlive_soldiers().get(i).y_position - unit.y_position)*(army.getAlive_soldiers().get(i).y_position - unit.y_position))) {
+                unit.attack(army.getAlive_soldiers().get(i));
+                army.check_for_dead();
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+class Army {
+    private List<Soldier> alive_soldiers;
+    private boolean defenders;
+    public static int[] defenders_average_position;
+
+    Army(boolean defenders) {
+        this.defenders = defenders;
+        alive_soldiers = new ArrayList<>();
+    }
+
+    public List<Soldier> getAlive_soldiers() {
+        return this.alive_soldiers;
+    }
+
+    public void add_soldier(Soldier unit) {
+        this.alive_soldiers.add(unit);
+    }
+
+    public void check_for_dead() {
+        Iterator<Soldier> iterator = this.alive_soldiers.iterator();
+
+        while(iterator.hasNext()) {
+            if (!iterator.next().isAlive()) {
+                iterator.remove();
+            }
+        }
+
+    }
+
+    public void check_army() {
+        for (int i = 0; i != this.alive_soldiers.size(); i++) {
+            System.out.println("Soldier " + i);
+        }
+    }
+
+    public static void find_defenders(Army defenders) {
+        defenders_average_position = new int[2];
+        int x = 0, y = 0;
+        for (int i = 0; i != defenders.alive_soldiers.size(); i++) {
+            x = defenders.alive_soldiers.get(i).x_position;
+            y = defenders.alive_soldiers.get(i).y_position;
+        }
+        defenders_average_position[0] = x/defenders.alive_soldiers.size();
+        defenders_average_position[1] = y/defenders.alive_soldiers.size();
+    }
+
+}
+
