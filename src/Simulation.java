@@ -120,6 +120,20 @@ class Knight extends Soldier implements AttackCommand{
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
 }
+class King extends Soldier implements AttackCommand{
+    public King(int x, int y) {
+        this.setPower(27);
+        this.setHealth(130);
+        this.setMovement(5);
+        this.setRange(2);
+        this.setX_position(x);
+        this.setY_position(y);
+    }
+    @Override
+    public void attack(Soldier enemy) {
+        enemy.setHealth(enemy.getHealth()-this.getPower());
+    }
+}
 class Ram extends Soldier{
     public Ram(int x, int y) {
         this.setPower(50+50*getMovement());
@@ -313,6 +327,12 @@ abstract class Board{
         this.iterations=iterations;
         this.type=type;
         this.fields = new Field[width][height];
+    }
+    public int getWidth(){
+        return width;
+    }
+    public int getHeight(){
+        return height;
     }
 
     public Field[][] boardType(int type,int width,int height){

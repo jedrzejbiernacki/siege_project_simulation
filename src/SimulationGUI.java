@@ -1,15 +1,9 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingWorker;
+import java.net.URL;
+import java.util.List;
 
 public class SimulationGUI extends JFrame {
     private final Board board;
@@ -18,7 +12,14 @@ public class SimulationGUI extends JFrame {
     private final JTextArea outputArea;
     private Knight a;
     private Archer b;
-    private final JPanel[][] boardPanels;
+    private final JLabel[][] boardLabels;
+    private final ImageIcon grassIcon;
+    private final ImageIcon mudIcon;
+    private final ImageIcon rocksIcon;
+    private final ImageIcon wallIcon;
+    private final ImageIcon gateIcon;
+    private final ImageIcon knightIcon;
+    private final ImageIcon archerIcon;
 
     public SimulationGUI() {
         setTitle("Simulation");
@@ -26,13 +27,22 @@ public class SimulationGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
+        // Load images
+        grassIcon = loadImageIcon("grass.jpg");
+        mudIcon = loadImageIcon("mud.jpg");
+        rocksIcon = loadImageIcon("Rock.jpg");
+        wallIcon = loadImageIcon("wall.jpg");
+        gateIcon = loadImageIcon("gate.jpg");
+        knightIcon = loadImageIcon("Knight.jpg");
+        archerIcon = loadImageIcon("archer.jpg");
+
         board = new Board(100, 100, 10, 1) {
             // Provide implementation for abstract methods if any
         };
         board.fields = board.boardType(1, 100, 100); // Choose board type 1 for simplicity
 
         boardPanel = new JPanel(new GridLayout(board.height, board.width));
-        boardPanels = new JPanel[board.height][board.width];
+        boardLabels = new JLabel[board.height][board.width];
         initializeBoard();
 
         startButton = new JButton("Start Simulation");
@@ -58,20 +68,20 @@ public class SimulationGUI extends JFrame {
         for (int i = 0; i < board.height; i++) {
             for (int j = 0; j < board.width; j++) {
                 Field field = board.fields[i][j];
-                JPanel panel = new JPanel();
+                JLabel label = new JLabel();
                 if (field instanceof Grass) {
-                    panel.setBackground(new Color(38, 162, 77));
+                    label.setIcon(grassIcon);
                 } else if (field instanceof Mud) {
-                    panel.setBackground(new Color(108, 52, 31));
+                    label.setIcon(mudIcon);
                 } else if (field instanceof Rocks) {
-                    panel.setBackground(Color.GRAY);
+                    label.setIcon(rocksIcon);
                 } else if (field instanceof Wall) {
-                    panel.setBackground(Color.DARK_GRAY);
+                    label.setIcon(wallIcon);
                 } else if (field instanceof Gate) {
-                    panel.setBackground(Color.ORANGE);
+                    label.setIcon(gateIcon);
                 }
-                boardPanels[i][j] = panel;
-                boardPanel.add(panel);
+                boardLabels[i][j] = label;
+                boardPanel.add(label);
             }
         }
     }
@@ -80,17 +90,17 @@ public class SimulationGUI extends JFrame {
         for (int i = 0; i < board.height; i++) {
             for (int j = 0; j < board.width; j++) {
                 Field field = board.fields[i][j];
-                JPanel panel = boardPanels[i][j];
+                JLabel label = boardLabels[i][j];
                 if (field instanceof Grass) {
-                    panel.setBackground(new Color(38, 162, 77));
+                    label.setIcon(grassIcon);
                 } else if (field instanceof Mud) {
-                    panel.setBackground(new Color(108, 52, 31));
+                    label.setIcon(mudIcon);
                 } else if (field instanceof Rocks) {
-                    panel.setBackground(Color.GRAY);
+                    label.setIcon(rocksIcon);
                 } else if (field instanceof Wall) {
-                    panel.setBackground(Color.DARK_GRAY);
+                    label.setIcon(wallIcon);
                 } else if (field instanceof Gate) {
-                    panel.setBackground(Color.ORANGE);
+                    label.setIcon(gateIcon);
                 }
             }
         }
@@ -101,19 +111,18 @@ public class SimulationGUI extends JFrame {
     }
 
     private void updateSoldierPosition(Soldier soldier) {
-        Field field = board.fields[soldier.getX_position()][soldier.getY_position()];
-        JPanel panel = boardPanels[soldier.getX_position()][soldier.getY_position()];
-        if(soldier.getHealth()<=0){
-        if (field instanceof Grass) {
-            panel.setBackground(new Color(38, 162, 77));
-        } else if (field instanceof Mud) {
-            panel.setBackground(new Color(108, 52, 31));
-        }
-        }
-        else if (soldier.getArmyType()) {
-            panel.setBackground(Color.BLUE);
+        JLabel label = boardLabels[soldier.getX_position()][soldier.getY_position()];
+        if(soldier.getHealth() <= 0) {
+            Field field = board.fields[soldier.getX_position()][soldier.getY_position()];
+            if (field instanceof Grass) {
+                label.setIcon(grassIcon);
+            } else if (field instanceof Mud) {
+                label.setIcon(mudIcon);
+            }
+        } else if (soldier.getArmyType()) {
+            label.setIcon(knightIcon);
         } else {
-            panel.setBackground(Color.RED);
+            label.setIcon(archerIcon);
         }
     }
 
@@ -142,7 +151,6 @@ public class SimulationGUI extends JFrame {
                         publish("Soldier 1 attacks Soldier 2. Soldier 2 health: " + b.getHealth());
                         if (b.getHealth() <= 0) {
                             publish("Soldier 2 is dead.");
-                            
                             updateBoard();
                             over = true;
                             break;
@@ -163,7 +171,7 @@ public class SimulationGUI extends JFrame {
             }
 
             @Override
-            protected void process(java.util.List<String> chunks) {
+            protected void process(List<String> chunks) {
                 for (String message : chunks) {
                     outputArea.append(message + "\n");
                 }
@@ -186,52 +194,51 @@ public class SimulationGUI extends JFrame {
 
     private void moveSoldierTowardsEnemy(Soldier soldier, Soldier enemy) {
         for (int i = 0; i < soldier.getMovement(); i++) {
-            if(soldier.getRange() >= calculateDistance(soldier, enemy)){
+            if (soldier.getRange() >= calculateDistance(soldier, enemy)) {
                 break;
-            }
-            else{
-            int startX = soldier.getX_position();
-            int startY = soldier.getY_position();
-            int targetX = startX;
-            int targetY = startY;
-            int bestDistance = calculateDistance(soldier, enemy);
+            } else {
+                int startX = soldier.getX_position();
+                int startY = soldier.getY_position();
+                int targetX = startX;
+                int targetY = startY;
+                int bestDistance = calculateDistance(soldier, enemy);
 
-            int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-            for (int[] direction : directions) {
-                int newX = startX + direction[0];
-                int newY = startY + direction[1];
-                if (isValidMove(newX, newY) && !(board.fields[newX][newY] instanceof Rocks)) {
-                    Soldier nextPosition = new Horseman(newX, newY);
-                    int newDistance = calculateDistance(nextPosition, enemy);
-                    int nextX = newX + direction[0];
-                    int nextY = newY + direction[1];
-                    if (isValidMove(nextX, nextY) && !(board.fields[nextX][nextY] instanceof Rocks)) {
-                        int newNewDistance = calculateDistance(new Horseman(nextX, nextY), enemy);
-                        if (newNewDistance < newDistance) {
-                            newDistance = newNewDistance;
-                            newX = nextX;
-                            newY = nextY;
+                int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+                for (int[] direction : directions) {
+                    int newX = startX + direction[0];
+                    int newY = startY + direction[1];
+                    if (isValidMove(newX, newY) && !(board.fields[newX][newY] instanceof Rocks)) {
+                        Soldier nextPosition = new Horseman(newX, newY);
+                        int newDistance = calculateDistance(nextPosition, enemy);
+                        int nextX = newX + direction[0];
+                        int nextY = newY + direction[1];
+                        if (isValidMove(nextX, nextY) && !(board.fields[nextX][nextY] instanceof Rocks)) {
+                            int newNewDistance = calculateDistance(new Horseman(nextX, nextY), enemy);
+                            if (newNewDistance < newDistance) {
+                                newDistance = newNewDistance;
+                                newX = nextX;
+                                newY = nextY;
+                            }
+                        }
+                        if (newDistance < bestDistance) {
+                            bestDistance = newDistance;
+                            targetX = newX;
+                            targetY = newY;
                         }
                     }
-                    if (newDistance < bestDistance) {
-                        bestDistance = newDistance;
-                        targetX = newX;
-                        targetY = newY;
-                    }
+                }
+
+                // Debugging prints
+                System.out.println("Soldier " + soldier.getClass().getSimpleName() + " moving from (" + startX + ", " + startY + ") to (" + targetX + ", " + targetY + ")");
+
+                // Move soldier if the target position is different
+                if (startX != targetX || startY != targetY) {
+                    soldier.setX_position(targetX);
+                    soldier.setY_position(targetY);
                 }
             }
-
-        // Debugging prints
-        System.out.println("Soldier " + soldier.getClass().getSimpleName() + " moving from (" + startX + ", " + startY + ") to (" + targetX + ", " + targetY + ")");
-
-        // Move soldier if the target position is different
-        if (startX != targetX || startY != targetY) {
-            soldier.setX_position(targetX);
-            soldier.setY_position(targetY);
         }
-    }
-    }
-    updateBoard();
+        updateBoard();
     }
 
     private boolean isValidMove(int x, int y) {
@@ -239,7 +246,22 @@ public class SimulationGUI extends JFrame {
                 !(board.fields[x][y] instanceof Wall) && !(board.fields[x][y] instanceof Rocks);
     }
 
+    private ImageIcon loadImageIcon(String fileName) {
+        URL imageURL = getClass().getResource(fileName);
+        if (imageURL != null) {            return new ImageIcon(imageURL);
+        } else {
+            throw new RuntimeException("Image file not found: " + fileName);
+        }
+    }
+
     public static void main(String[] args) {
-        new SimulationGUI();
+
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new SimulationGUI();
+            }
+        });
     }
 }
