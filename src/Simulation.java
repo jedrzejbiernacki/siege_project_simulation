@@ -225,7 +225,32 @@ class Horseman extends Soldier implements AttackCommand{
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
 }
-
+class Healer extends Soldier{
+    public Healer(int x, int y) {
+        this.setPower(-20);
+        this.setHealth(80);
+        this.setMovement(6);
+        this.setRange(3);
+        this.setX_position(x);
+        this.setY_position(y);
+    }
+    public void attack(Soldier enemy) {
+        enemy.setHealth(enemy.getHealth()-this.getPower());
+    }
+}
+class Leader extends Soldier{
+    public Leader(int x, int y) {
+        this.setPower(50);
+        this.setHealth(200);
+        this.setMovement(5);
+        this.setRange(2);
+        this.setX_position(x);
+        this.setY_position(y);
+    }
+    public void attack(Soldier enemy) {
+        enemy.setHealth(enemy.getHealth()-this.getPower());
+    }
+}
 abstract class Field {
     private boolean blocks;
     private int x_position;
