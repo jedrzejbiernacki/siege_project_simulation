@@ -242,19 +242,7 @@ class Healer extends Soldier{
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
 }
-class Leader extends Soldier{
-    public Leader(int x, int y) {
-        this.setPower(50);
-        this.setHealth(200);
-        this.setMovement(5);
-        this.setRange(2);
-        this.setX_position(x);
-        this.setY_position(y);
-    }
-    public void attack(Soldier enemy) {
-        enemy.setHealth(enemy.getHealth()-this.getPower());
-    }
-}
+
 abstract class Field {
     private boolean blocks;
     private int x_position;
@@ -520,7 +508,7 @@ class Army {
     private List<Soldier> alive_soldiers;
 
 
-    Army(boolean defenders, int number, int strength) {
+    Army(boolean defenders, int number, int strength, Board board) {
         if (strength > 10 || strength < 1) {
             System.out.println("Strength number should be between 1 and 10!");
             System.exit(0);
@@ -619,6 +607,12 @@ class Army {
                 int threshold2 = threshold1 + 20 - strength;
                 int threshold3 = threshold2 + 10 - strength / 2;
                 int threshold4 = threshold3 + 5 - strength / 4; //Okreslanie sily tworzonej jednostki na podstawie zmiennej strength
+
+                if(i == 0) {
+                    Soldier king = new King(board);
+                    this.alive_soldiers.add(king);
+                }
+
 
                 if (roll < threshold1) {
                     int x = rand.nextInt(20);
