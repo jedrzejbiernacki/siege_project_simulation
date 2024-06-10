@@ -103,7 +103,12 @@ abstract class Soldier {
         return this.health > 0;
     }
 
-    public void attack(Soldier target) {}
+    public void attack(Soldier target) {
+
+    }
+    public void attack(Field target){
+
+    }
 }
 
 class Knight extends Soldier implements AttackCommand{
@@ -527,44 +532,44 @@ class Army {
                     if (strength < 3) {
 
                     } else if (strength < 5) {
-                        int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                        int y = rand.nextInt(Board.height);
+                        int y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                        int x = board.getHeight()/2+5;
                         Soldier a = new Catapult(x, y);
                         this.alive_soldiers.add(a);
                     } else if (strength < 7) {
-                        int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                        int y = rand.nextInt(Board.height);
+                        int y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                        int x = board.getHeight()/2+5;
                         Soldier a = new Catapult(x, y);
-                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                        y = rand.nextInt(Board.height);
+                        y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                        x = board.getHeight()/2;
                         Soldier b = new Ram(x, y);
                         this.alive_soldiers.add(a);
                         this.alive_soldiers.add(b);
                     } else if (strength < 10) {
-                        int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                        int y = rand.nextInt(Board.height);
+                        int y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                        int x = board.getHeight()/2+5;
                         Soldier a = new Catapult(x, y);
-                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                        y = rand.nextInt(Board.height);
+                        y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                        x = board.getHeight()/2;
                         Soldier b = new Ram(x, y);
-                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                        y = rand.nextInt(Board.height);
+                        y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                        x = board.getHeight()/2-5;
                         Soldier c = new Catapult(x, y);
                         this.alive_soldiers.add(a);
                         this.alive_soldiers.add(b);
                         this.alive_soldiers.add(c);
                     } else {
-                        int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                        int y = rand.nextInt(Board.height);
+                        int y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                        int x = board.getHeight()/2+5;
                         Soldier a = new Catapult(x, y);
-                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                        y = rand.nextInt(Board.height);
+                        y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                        x = board.getHeight()/2;
                         Soldier b = new Ram(x, y);
-                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                        y = rand.nextInt(Board.height);
+                        y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                        x = board.getHeight()/2-5;
                         Soldier c = new Catapult(x, y);
-                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                        y = rand.nextInt(Board.height);
+                        y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                        x = board.getHeight()/2+8;
                         Soldier d = new Catapult(x, y);
                         this.alive_soldiers.add(a);
                         this.alive_soldiers.add(b);
@@ -574,28 +579,28 @@ class Army {
                 }
 
                 if (roll < threshold1) {
-                    int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                    int y = rand.nextInt(Board.height);
+                    int y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                    int x = (int) Math.floor( Math.random() * (100-0) + 0 );
                     Soldier a = new Knight(x, y);
                     alive_soldiers.add(a);
                 } else if (roll < threshold2) {
-                    int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                    int y = rand.nextInt(Board.height);
+                    int y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                    int x = (int) Math.floor( Math.random() * (100-0) + 0 );
                     Soldier a = new Archer(x, y);
                     alive_soldiers.add(a);
                 } else if (roll < threshold3) {
-                    int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                    int y = rand.nextInt(Board.height);
+                    int y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                    int x = (int) Math.floor( Math.random() * (100-0) + 0 );
                     Soldier a = new Horseman(x, y);
                     alive_soldiers.add(a);
                 } else if (roll < threshold4) {
-                    int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                    int y = rand.nextInt(Board.height);
+                    int y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                    int x = (int) Math.floor( Math.random() * (100-0) + 0 );
                     Soldier a = new Medic(x, y);
                     alive_soldiers.add(a);
                 } else {
-                    int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
-                    int y = rand.nextInt(Board.height);
+                    int y = (int) Math.floor( Math.random() * (100-90) + 90 );
+                    int x = (int) Math.floor( Math.random() * (100-0) + 0 );
                     Soldier a = new Leader(x, y);
                     alive_soldiers.add(a);
                 }

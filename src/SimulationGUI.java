@@ -6,13 +6,14 @@ import java.net.URL;
 import java.util.List;
 
 public class SimulationGUI extends JFrame {
-    private final Board board;
+    public final Board board;
     private final JPanel boardPanel;
     private final JButton startButton;
     private final JTextArea outputArea;
     private Army defender;
     private Army attacker;
     private King king;
+
     private Catapult c;
     private final JLabel[][] boardLabels;
     private final ImageIcon grassIcon;
@@ -22,6 +23,12 @@ public class SimulationGUI extends JFrame {
     private final ImageIcon gateIcon;
     private final ImageIcon knightIcon;
     private final ImageIcon archerIcon;
+    private final ImageIcon catapultIcon;
+    private final ImageIcon horsemanIcon;
+    private final ImageIcon medicIcon;
+    private final ImageIcon leaderIcon;
+    private final ImageIcon ramIcon;
+    private final ImageIcon kingIcon;
 
     public SimulationGUI() {
         setTitle("Simulation");
@@ -37,7 +44,12 @@ public class SimulationGUI extends JFrame {
         gateIcon = loadImageIcon("gate.jpg");
         knightIcon = loadImageIcon("knight.jpg");
         archerIcon = loadImageIcon("archer.jpg");
-
+        catapultIcon = loadImageIcon("catapult.jpg");
+        ramIcon = loadImageIcon("ram.jpg");
+        medicIcon = loadImageIcon("medic.jpg");
+        leaderIcon = loadImageIcon("leader.jpg");
+        kingIcon = loadImageIcon("king.jpg");
+        horsemanIcon = loadImageIcon("horseman.jpg");
         board = new Board(100, 100, 10, 1) {
 
         };
@@ -106,25 +118,49 @@ public class SimulationGUI extends JFrame {
                 }
             }
         }
-        updateSoldierPosition(a);
-        updateSoldierPosition(b);
+        for(int i = 0;i<defender.getAlive_soldiers().size();i++){
+            updateSoldierPosition(defender.getAlive_soldiers().get(i));
+        }
+        for(int i = 0;i<attacker.getAlive_soldiers().size();i++){
+            updateSoldierPosition(attacker.getAlive_soldiers().get(i));
+        }
         boardPanel.revalidate();
         boardPanel.repaint();
     }
 
     private void updateSoldierPosition(Soldier soldier) {
-        JLabel label = boardLabels[soldier.getX_position()][soldier.getY_position()];
+        JLabel label = boardLabels[soldier.getY_position()][soldier.getX_position()];
         if(soldier.getHealth() <= 0) {
-            Field field = board.fields[soldier.getX_position()][soldier.getY_position()];
+            Field field = board.fields[soldier.getY_position()][soldier.getX_position()];
             if (field instanceof Grass) {
                 label.setIcon(grassIcon);
             } else if (field instanceof Mud) {
                 label.setIcon(mudIcon);
             }
-        } else if (!soldier.getArmyType()) {
-            label.setIcon(knightIcon);
-        } else {
+        }
+        else if(soldier instanceof Knight){
+                label.setIcon(knightIcon);
+            }
+        else if(soldier instanceof Archer){
             label.setIcon(archerIcon);
+        }
+        else if(soldier instanceof Catapult){
+            label.setIcon(catapultIcon);
+        }
+        else if(soldier instanceof King){
+            label.setIcon(kingIcon);
+        }
+        else if(soldier instanceof Ram){
+            label.setIcon(ramIcon);
+        }
+        else if(soldier instanceof Medic){
+            label.setIcon(medicIcon);
+        }
+        else if(soldier instanceof Leader){
+            label.setIcon(leaderIcon);
+        }
+        else if(soldier instanceof Horseman){
+            label.setIcon(horsemanIcon);
         }
     }
 
@@ -193,25 +229,35 @@ public class SimulationGUI extends JFrame {
 
         startButton.setEnabled(false);
         worker.execute();*/
-        attacker = new Army(false,50,5);
-        defender = new Army(true,50,5);
-        king = new King(board);
-        while(!(attacker.isEmpty())||!(king.isAlive())){
+        attacker = new Army(false,50,5,board);
+        defender = new Army(true,50,5,board);
+
+        while(!(attacker.isEmpty())||!(defender.getAlive_soldiers().get(0).isAlive())){
             for(int i = 0;i<attacker.getAlive_soldiers().size();i++){
                 Soldier a = attacker.getAlive_soldiers().get(i);
                 if(a instanceof Catapult){
                     moveCatapultTowardsWall(a);
-                    ((Catapult) a).attack();
+                    scanForWallOrGate(a);
                 }
                 else if(a instanceof Ram){
                     moveRamTowardsGate(a);
+                    scanForWallOrGate(a);
+
                 }
                 else{
-                    moveSoldierTowardsEnemy(a,king);
+                    moveSoldierTowardsEnemy(a,defender.getAlive_soldiers().get(0));
+                    scanForEnemies(a,defender.getAlive_soldiers());
                 }
 
             }
+            for(int i = 0;i<defender.getAlive_soldiers().size();i++){
+                Soldier a = defender.getAlive_soldiers().get(i);
+                scanForEnemies(a,attacker.getAlive_soldiers());
+            }
+            attacker.check_for_dead();
+            defender.check_for_dead();
         }
+
 
     }
 
@@ -221,7 +267,10 @@ public class SimulationGUI extends JFrame {
     }
     private void scanForEnemies(Soldier soldier,List<Soldier> enemies){
         for(int i = 0;i<enemies.size();i++){
-
+            if(Math.sqrt(enemies.get(i).getX_position()*enemies.get(i).getX_position()+enemies.get(i).getY_position()*enemies.get(i).getY_position())<=soldier.getRange()){
+                soldier.attack(enemies.get(i));
+                break;
+            }
         }
     }
 
@@ -267,12 +316,30 @@ public class SimulationGUI extends JFrame {
 
         updateBoard();
         }
+        private void scanForWallOrGate(Soldier soldier){
+        if(soldier instanceof Catapult) {
+            for (int i = 0; i < soldier.getRange(); i++) {
+                Field field = board.fields[soldier.getY_position()][soldier.getX_position() - i];
+                if (field instanceof Wall){
+                    soldier.attack(field);
+                }
+            }
+        }
+        else{
+            for (int i = 0; i < soldier.getRange(); i++) {
+                Field field = board.fields[soldier.getY_position()][soldier.getX_position() - i];
+                if (field instanceof Gate){
+                    soldier.attack(field);
+                }
+            }
+        }
+    }
         private void moveCatapultTowardsWall(Soldier catapult){
             int currentX = catapult.getX_position();
             int currentY = catapult.getY_position();
 
             for(int i = 0;i<catapult.getRange();i++){
-                Field field = board.fields[currentX-i][catapult.getY_position()];
+                Field field = board.fields[catapult.getY_position()][currentX-i];
                 if(field instanceof Wall){
                     return;
                 }
@@ -296,13 +363,14 @@ public class SimulationGUI extends JFrame {
             }
             catapult.setX_position(currentX);
             catapult.setY_position(currentY);
+            updateBoard();
         }
     private void moveRamTowardsGate(Soldier catapult){
         int currentX = catapult.getX_position();
         int currentY = catapult.getY_position();
 
         for(int i = 0;i<catapult.getRange();i++){
-            Field field = board.fields[currentX-i][catapult.getY_position()];
+            Field field = board.fields[catapult.getY_position()][currentX-i];
             if(field instanceof Gate){
                 return;
             }
@@ -326,13 +394,14 @@ public class SimulationGUI extends JFrame {
         }
         catapult.setX_position(currentX);
         catapult.setY_position(currentY);
+        updateBoard();
     }
 
 
 
     private boolean isValidMove(int x, int y) {
         return x >= 0 && y >= 0 && x < board.height && y < board.width &&
-                !(board.fields[x][y] instanceof Wall) && !(board.fields[x][y] instanceof Rocks);
+                !(board.fields[y][x] instanceof Wall) && !(board.fields[y][x] instanceof Rocks);
     }
 
     private ImageIcon loadImageIcon(String fileName) {
@@ -345,12 +414,25 @@ public class SimulationGUI extends JFrame {
 
     public static void main(String[] args) {
 
+        /*SimulationGUI simulationGUI = new SimulationGUI();
+        Army defender = new Army(true,50,8,simulationGUI.board);
+        for(int i = 0;i<defender.getAlive_soldiers().size();i++){
+            if(defender.getAlive_soldiers().get(i)instanceof King){
+                System.out.println(i);
+            }
+        }*/
+
+
+
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 new SimulationGUI();
             }
+
         });
+
+
     }
 }
