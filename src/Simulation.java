@@ -147,6 +147,10 @@ class Ram extends Soldier{
         this.setDefender(false);
     }
 
+    public void increase_movement() {
+        this.setMovement(this.getMovement()+2);
+    }
+
     public void attack(Gate enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
@@ -183,14 +187,14 @@ class Archer extends Soldier implements AttackCommand{
 }
 class Leader extends Soldier implements AttackCommand{
     private int auraRange;
-    public Leader(int x,int y,int auraRange){
+    public Leader(int x,int y){
         this.setPower(50);
         this.setHealth(200);
         this.setMovement(5);
         this.setRange(2);
         this.setX_position(x);
         this.setY_position(y);
-        this.auraRange = auraRange;
+        this.auraRange = 5;
     }
     @Override
     public void attack(Soldier enemy) {
@@ -341,8 +345,8 @@ class Wall extends Field{
     }
 }
 abstract class Board{
-    protected int width;
-    protected int height;
+    public static  int width;
+    public static int height;
     protected int iterations;
     protected int type;
     protected Field[][] fields;
@@ -511,78 +515,157 @@ abstract class Board{
     }
 }
 
-class MovementLogic {
-    public static void move_attacker(Soldier unit, Field[][] board) {
-
-        // Decide next move based on relative position of unit B
-        if (unit.getX_position() < Army.defenders_average_position[0] && !(board[unit.getX_position() + 1][unit.getY_position()]instanceof Rocks)) {
-            unit.x_position++;
-        } else if (unit.getX_position() > Army.defenders_average_position[0] && !(board[unit.getX_position() - 1][unit.getY_position()]instanceof Rocks)) {
-            unit.x_position--;
-        } else if (unit.getY_position() < Army.defenders_average_position[1] && !(board[unit.getX_position()][unit.getY_position() + 1]instanceof Rocks)) {
-            unit.y_position++;
-        } else if (unit.getY_position() > Army.defenders_average_position[1] && !(board[unit.getX_position()][unit.getY_position() - 1]instanceof Rocks )) {
-            unit.y_position--;
-        }
-    }
-
-    public static boolean check_for_enemies(Soldier unit, Army army) {
-        for (int i = 0; i != army.getAlive_soldiers().size(); i++) {
-            if (unit.getRange() >= sqrt((army.getAlive_soldiers().get(i).x_position - unit.x_position)*(army.getAlive_soldiers().get(i).x_position - unit.x_position) + (army.getAlive_soldiers().get(i).y_position - unit.y_position)*(army.getAlive_soldiers().get(i).y_position - unit.y_position))) {
-                unit.attack(army.getAlive_soldiers().get(i));
-                army.check_for_dead();
-                return true;
-            }
-        }
-        return false;
-    }
-}
 
 class Army {
     private List<Soldier> alive_soldiers;
-    private boolean defenders;
-    public static int[] defenders_average_position;
 
-    Army(boolean defenders) {
-        this.defenders = defenders;
-        alive_soldiers = new ArrayList<>();
+
+    Army(boolean defenders, int number, int strength) {
+        if (strength > 10 || strength < 1) {
+            System.out.println("Strength number should be between 1 and 10!");
+            System.exit(0);
+        }
+        this.alive_soldiers = new ArrayList<>();
+        Random rand = new Random();
+        if (!defenders) {
+            for (int i = 0; i != number; i++) {
+                int roll = rand.nextInt(100);
+                int threshold1 = 60 + strength;
+                int threshold2 = threshold1 + 20 - strength;
+                int threshold3 = threshold2 + 10 - strength / 2;
+                int threshold4 = threshold3 + 5 - strength / 4; //Okreslanie sily tworzonej jednostki na podstawie zmiennej strength
+
+                if (i == 0) {
+                    if (strength < 3) {
+
+                    } else if (strength < 5) {
+                        int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                        int y = rand.nextInt(Board.height);
+                        Soldier a = new Catapult(x, y);
+                        this.alive_soldiers.add(a);
+                    } else if (strength < 7) {
+                        int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                        int y = rand.nextInt(Board.height);
+                        Soldier a = new Catapult(x, y);
+                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                        y = rand.nextInt(Board.height);
+                        Soldier b = new Ram(x, y);
+                        this.alive_soldiers.add(a);
+                        this.alive_soldiers.add(b);
+                    } else if (strength < 10) {
+                        int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                        int y = rand.nextInt(Board.height);
+                        Soldier a = new Catapult(x, y);
+                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                        y = rand.nextInt(Board.height);
+                        Soldier b = new Ram(x, y);
+                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                        y = rand.nextInt(Board.height);
+                        Soldier c = new Catapult(x, y);
+                        this.alive_soldiers.add(a);
+                        this.alive_soldiers.add(b);
+                        this.alive_soldiers.add(c);
+                    } else {
+                        int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                        int y = rand.nextInt(Board.height);
+                        Soldier a = new Catapult(x, y);
+                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                        y = rand.nextInt(Board.height);
+                        Soldier b = new Ram(x, y);
+                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                        y = rand.nextInt(Board.height);
+                        Soldier c = new Catapult(x, y);
+                        x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                        y = rand.nextInt(Board.height);
+                        Soldier d = new Catapult(x, y);
+                        this.alive_soldiers.add(a);
+                        this.alive_soldiers.add(b);
+                        this.alive_soldiers.add(c);
+                        this.alive_soldiers.add(d);
+                    }
+                }
+
+                if (roll < threshold1) {
+                    int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                    int y = rand.nextInt(Board.height);
+                    Soldier a = new Knight(x, y);
+                    alive_soldiers.add(a);
+                } else if (roll < threshold2) {
+                    int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                    int y = rand.nextInt(Board.height);
+                    Soldier a = new Archer(x, y);
+                    alive_soldiers.add(a);
+                } else if (roll < threshold3) {
+                    int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                    int y = rand.nextInt(Board.height);
+                    Soldier a = new Horseman(x, y);
+                    alive_soldiers.add(a);
+                } else if (roll < threshold4) {
+                    int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                    int y = rand.nextInt(Board.height);
+                    Soldier a = new Medic(x, y);
+                    alive_soldiers.add(a);
+                } else {
+                    int x = rand.nextInt((Board.width - (Board.width - 10)) + 1) + (Board.width - 10);
+                    int y = rand.nextInt(Board.height);
+                    Soldier a = new Leader(x, y);
+                    alive_soldiers.add(a);
+                }
+            }
+        } else {
+            for (int i = 0; i != number; i++) {
+                int roll = rand.nextInt(100);
+                int threshold1 = 60 + strength;
+                int threshold2 = threshold1 + 20 - strength;
+                int threshold3 = threshold2 + 10 - strength / 2;
+                int threshold4 = threshold3 + 5 - strength / 4; //Okreslanie sily tworzonej jednostki na podstawie zmiennej strength
+
+                if (roll < threshold1) {
+                    int x = rand.nextInt(20);
+                    int y = rand.nextInt(Board.height);
+                    Soldier a = new Knight(x, y);
+                    alive_soldiers.add(a);
+                } else if (roll < threshold2) {
+                    int x = rand.nextInt(20);
+                    int y = rand.nextInt(Board.height);
+                    Soldier a = new Archer(x, y);
+                    alive_soldiers.add(a);
+                } else if (roll < threshold3) {
+                    int x = rand.nextInt(20);
+                    int y = rand.nextInt(Board.height);
+                    Soldier a = new Horseman(x, y);
+                    alive_soldiers.add(a);
+                } else if (roll < threshold4) {
+                    int x = rand.nextInt(20);
+                    int y = rand.nextInt(Board.height);
+                    Soldier a = new Medic(x, y);
+                    alive_soldiers.add(a);
+                } else {
+                    int x = rand.nextInt(20);
+                    int y = rand.nextInt(Board.height);
+                    Soldier a = new Leader(x, y);
+                    alive_soldiers.add(a);
+                }
+            }
+        }
     }
+
 
     public List<Soldier> getAlive_soldiers() {
         return this.alive_soldiers;
     }
 
-    public void add_soldier(Soldier unit) {
-        this.alive_soldiers.add(unit);
-    }
 
     public void check_for_dead() {
-        Iterator<Soldier> iterator = this.alive_soldiers.iterator();
-
-        while(iterator.hasNext()) {
-            if (!iterator.next().isAlive()) {
-                iterator.remove();
-            }
-        }
-
+        this.alive_soldiers.removeIf(soldier -> !soldier.isAlive());
     }
 
     public void check_army() {
         for (int i = 0; i != this.alive_soldiers.size(); i++) {
-            System.out.println("Soldier " + i);
+            System.out.println("Soldier " + i); //Debug tool
         }
     }
 
-    public static void find_defenders(Army defenders) {
-        defenders_average_position = new int[2];
-        int x = 0, y = 0;
-        for (int i = 0; i != defenders.alive_soldiers.size(); i++) {
-            x = defenders.alive_soldiers.get(i).x_position;
-            y = defenders.alive_soldiers.get(i).y_position;
-        }
-        defenders_average_position[0] = x/defenders.alive_soldiers.size();
-        defenders_average_position[1] = y/defenders.alive_soldiers.size();
-    }
 
 }
 
