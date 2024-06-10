@@ -121,13 +121,15 @@ class Knight extends Soldier implements AttackCommand{
     }
 }
 class King extends Soldier implements AttackCommand{
-    public King(int x, int y) {
-        this.setPower(27);
-        this.setHealth(130);
-        this.setMovement(5);
+
+
+    public King(Board board) {
+        this.setPower(15);
+        this.setHealth(300);
+        this.setMovement(0);
         this.setRange(2);
-        this.setX_position(x);
-        this.setY_position(y);
+        this.setX_position(0);
+        this.setY_position(board.getHeight()/2);
     }
     @Override
     public void attack(Soldier enemy) {
@@ -136,9 +138,8 @@ class King extends Soldier implements AttackCommand{
 }
 class Ram extends Soldier{
     public Ram(int x, int y) {
-        this.setPower(50+50*getMovement());
+        this.setPower(2*getMovement());
         this.setHealth(250);
-        //tu trzeba zeby sie rozpedzal
         this.setMovement(3);
         this.setRange(2);
         this.setX_position(x);

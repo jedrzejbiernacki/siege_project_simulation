@@ -12,6 +12,7 @@ public class SimulationGUI extends JFrame {
     private final JTextArea outputArea;
     private Knight a;
     private Archer b;
+    private Catapult c;
     private final JLabel[][] boardLabels;
     private final ImageIcon grassIcon;
     private final ImageIcon mudIcon;
@@ -23,23 +24,23 @@ public class SimulationGUI extends JFrame {
 
     public SimulationGUI() {
         setTitle("Simulation");
-        setSize(800, 600);
+        setSize(1024,960);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Load images
-        grassIcon = loadImageIcon("grass.jpg");
+
+        grassIcon = loadImageIcon("grass.JPG");
         mudIcon = loadImageIcon("mud.jpg");
-        rocksIcon = loadImageIcon("Rock.jpg");
+        rocksIcon = loadImageIcon("rock.jpeg");
         wallIcon = loadImageIcon("wall.jpg");
         gateIcon = loadImageIcon("gate.jpg");
-        knightIcon = loadImageIcon("Knight.jpg");
+        knightIcon = loadImageIcon("knight.jpg");
         archerIcon = loadImageIcon("archer.jpg");
 
         board = new Board(100, 100, 10, 1) {
-            // Provide implementation for abstract methods if any
+
         };
-        board.fields = board.boardType(1, 100, 100); // Choose board type 1 for simplicity
+        board.fields = board.boardType(1, 100, 100);
 
         boardPanel = new JPanel(new GridLayout(board.height, board.width));
         boardLabels = new JLabel[board.height][board.width];
@@ -119,7 +120,7 @@ public class SimulationGUI extends JFrame {
             } else if (field instanceof Mud) {
                 label.setIcon(mudIcon);
             }
-        } else if (soldier.getArmyType()) {
+        } else if (!soldier.getArmyType()) {
             label.setIcon(knightIcon);
         } else {
             label.setIcon(archerIcon);
@@ -127,10 +128,11 @@ public class SimulationGUI extends JFrame {
     }
 
     private void startSimulation() {
-        a = new Knight(30, 70); // Soldier 1
+        a = new Knight(70, 30); // Soldier 1
         a.setDefender(false);
-        b = new Archer(70, 30); // Soldier 2
+        b = new Archer(30, 70); // Soldier 2
         b.setDefender(true);
+        c = new Catapult(90,30);
         updateBoard();
         SwingWorker<Void, String> worker = new SwingWorker<>() {
             @Override
@@ -138,13 +140,14 @@ public class SimulationGUI extends JFrame {
                 boolean over = false;
                 while (!over) {
                     try {
-                        Thread.sleep(1000); // Pause for a while to visualize the steps
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
 
                     moveSoldierTowardsEnemy(a, b);
                     moveSoldierTowardsEnemy(b, a);
+                    moveSoldierTowardsEnemy(c,new Wall());
 
                     if (a.getRange() >= calculateDistance(a, b)) {
                         a.attack(b);
@@ -155,6 +158,9 @@ public class SimulationGUI extends JFrame {
                             over = true;
                             break;
                         }
+                    }
+                    if (c.getRange() >= calculateDistance(c, a)) {
+                        c.
                     }
 
                     if (b.getRange() >= calculateDistance(b, a)) {
@@ -192,54 +198,80 @@ public class SimulationGUI extends JFrame {
         return Math.abs(s1.getX_position() - s2.getX_position()) + Math.abs(s1.getY_position() - s2.getY_position());
     }
 
-    private void moveSoldierTowardsEnemy(Soldier soldier, Soldier enemy) {
-        for (int i = 0; i < soldier.getMovement(); i++) {
-            if (soldier.getRange() >= calculateDistance(soldier, enemy)) {
-                break;
-            } else {
-                int startX = soldier.getX_position();
-                int startY = soldier.getY_position();
-                int targetX = startX;
-                int targetY = startY;
-                int bestDistance = calculateDistance(soldier, enemy);
+    private void moveSoldierTowardsEnemy(Soldier mover, Soldier enemy) {
+        int currentX = mover.getX_position();
+        int currentY = mover.getY_position();
+        int enemyX = enemy.getX_position();
+        int enemyY = enemy.getY_position();
+        int movementSpeed = mover.getMovement();
+        if(mover.getRange()>=calculateDistance(mover,enemy)){
+            return;
+        }
+        else{
+            for (int step = 0; step < movementSpeed; step++) {
 
-                int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-                for (int[] direction : directions) {
-                    int newX = startX + direction[0];
-                    int newY = startY + direction[1];
-                    if (isValidMove(newX, newY) && !(board.fields[newX][newY] instanceof Rocks)) {
-                        Soldier nextPosition = new Horseman(newX, newY);
-                        int newDistance = calculateDistance(nextPosition, enemy);
-                        int nextX = newX + direction[0];
-                        int nextY = newY + direction[1];
-                        if (isValidMove(nextX, nextY) && !(board.fields[nextX][nextY] instanceof Rocks)) {
-                            int newNewDistance = calculateDistance(new Horseman(nextX, nextY), enemy);
-                            if (newNewDistance < newDistance) {
-                                newDistance = newNewDistance;
-                                newX = nextX;
-                                newY = nextY;
-                            }
-                        }
-                        if (newDistance < bestDistance) {
-                            bestDistance = newDistance;
-                            targetX = newX;
-                            targetY = newY;
+                int[] dx = {1, -1, 0, 0};
+                int[] dy = {0, 0, 1, -1};
+                int bestX = currentX;
+                int bestY = currentY;
+                int minDistance = Integer.MAX_VALUE;
+
+                for (int i = 0; i < 4; i++) {
+                    int newX = currentX + dx[i];
+                    int newY = currentY + dy[i];
+                    if (isValidMove(newX, newY)) {
+                        int distance = Math.abs(newX - enemyX) + Math.abs(newY - enemyY);
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            bestX = newX;
+                            bestY = newY;
                         }
                     }
                 }
-
-                // Debugging prints
-                System.out.println("Soldier " + soldier.getClass().getSimpleName() + " moving from (" + startX + ", " + startY + ") to (" + targetX + ", " + targetY + ")");
-
-                // Move soldier if the target position is different
-                if (startX != targetX || startY != targetY) {
-                    soldier.setX_position(targetX);
-                    soldier.setY_position(targetY);
+                if (minDistance == Integer.MAX_VALUE) {
+                    break;
                 }
+                currentX = bestX;
+                currentY = bestY;
             }
+            mover.setX_position(currentX);
+            mover.setY_position(currentY);
         }
+
         updateBoard();
-    }
+        }
+        private void moveCatapultTowardsWall(Soldier catapult){
+            int currentX = catapult.getX_position();
+            int currentY = catapult.getY_position();
+
+            for(int i = 0;i<catapult.getRange();i++){
+                Field field = board.fields[currentX-i][catapult.getY_position()];
+                if(field instanceof Wall){
+                    return;
+                }
+                else{
+                    if(isValidMove(currentX-1,catapult.getY_position())){
+                        if(isValidMove(currentX-2,catapult.getY_position())){
+                            currentX = catapult.getX_position()-2;
+                        }
+                        else{
+                            currentX = catapult.getX_position()-1;
+                        }
+
+                    }
+                    else {
+                        currentY+=1;
+
+                    }
+
+                }
+
+            }
+            catapult.setX_position(currentX);
+            catapult.setY_position(currentY);
+        }
+
+
 
     private boolean isValidMove(int x, int y) {
         return x >= 0 && y >= 0 && x < board.height && y < board.width &&
