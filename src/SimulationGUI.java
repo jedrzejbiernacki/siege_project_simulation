@@ -147,7 +147,7 @@ public class SimulationGUI extends JFrame {
 
                     moveSoldierTowardsEnemy(a, b);
                     moveSoldierTowardsEnemy(b, a);
-                    moveSoldierTowardsEnemy(c,new Wall());
+                    moveCatapultTowardsWall(c);
 
                     if (a.getRange() >= calculateDistance(a, b)) {
                         a.attack(b);
@@ -160,7 +160,7 @@ public class SimulationGUI extends JFrame {
                         }
                     }
                     if (c.getRange() >= calculateDistance(c, a)) {
-                        c.
+
                     }
 
                     if (b.getRange() >= calculateDistance(b, a)) {
