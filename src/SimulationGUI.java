@@ -10,8 +10,9 @@ public class SimulationGUI extends JFrame {
     private final JPanel boardPanel;
     private final JButton startButton;
     private final JTextArea outputArea;
-    private Knight a;
-    private Archer b;
+    private Army defender;
+    private Army attacker;
+    private King king;
     private Catapult c;
     private final JLabel[][] boardLabels;
     private final ImageIcon grassIcon;
@@ -128,7 +129,7 @@ public class SimulationGUI extends JFrame {
     }
 
     private void startSimulation() {
-        a = new Knight(70, 30); // Soldier 1
+        /*a = new Knight(70, 30); // Soldier 1
         a.setDefender(false);
         b = new Archer(30, 70); // Soldier 2
         b.setDefender(true);
@@ -191,11 +192,37 @@ public class SimulationGUI extends JFrame {
         };
 
         startButton.setEnabled(false);
-        worker.execute();
+        worker.execute();*/
+        attacker = new Army(false,50,5);
+        defender = new Army(true,50,5);
+        king = new King(board);
+        while(!(attacker.isEmpty())||!(king.isAlive())){
+            for(int i = 0;i<attacker.getAlive_soldiers().size();i++){
+                Soldier a = attacker.getAlive_soldiers().get(i);
+                if(a instanceof Catapult){
+                    moveCatapultTowardsWall(a);
+                    ((Catapult) a).attack();
+                }
+                else if(a instanceof Ram){
+                    moveRamTowardsGate(a);
+                }
+                else{
+                    moveSoldierTowardsEnemy(a,king);
+                }
+
+            }
+        }
+
     }
+
 
     private int calculateDistance(Soldier s1, Soldier s2) {
         return Math.abs(s1.getX_position() - s2.getX_position()) + Math.abs(s1.getY_position() - s2.getY_position());
+    }
+    private void scanForEnemies(Soldier soldier,List<Soldier> enemies){
+        for(int i = 0;i<enemies.size();i++){
+
+        }
     }
 
     private void moveSoldierTowardsEnemy(Soldier mover, Soldier enemy) {
@@ -270,6 +297,36 @@ public class SimulationGUI extends JFrame {
             catapult.setX_position(currentX);
             catapult.setY_position(currentY);
         }
+    private void moveRamTowardsGate(Soldier catapult){
+        int currentX = catapult.getX_position();
+        int currentY = catapult.getY_position();
+
+        for(int i = 0;i<catapult.getRange();i++){
+            Field field = board.fields[currentX-i][catapult.getY_position()];
+            if(field instanceof Gate){
+                return;
+            }
+            else{
+                if(isValidMove(currentX-1,catapult.getY_position())){
+                    if(isValidMove(currentX-2,catapult.getY_position())){
+                        currentX = catapult.getX_position()-2;
+                    }
+                    else{
+                        currentX = catapult.getX_position()-1;
+                    }
+
+                }
+                else {
+                    currentY+=1;
+
+                }
+
+            }
+
+        }
+        catapult.setX_position(currentX);
+        catapult.setY_position(currentY);
+    }
 
 
 

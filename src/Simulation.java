@@ -242,19 +242,7 @@ class Healer extends Soldier{
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
 }
-class Leader extends Soldier{
-    public Leader(int x, int y) {
-        this.setPower(50);
-        this.setHealth(200);
-        this.setMovement(5);
-        this.setRange(2);
-        this.setX_position(x);
-        this.setY_position(y);
-    }
-    public void attack(Soldier enemy) {
-        enemy.setHealth(enemy.getHealth()-this.getPower());
-    }
-}
+
 abstract class Field {
     private boolean blocks;
     private int x_position;
@@ -664,6 +652,12 @@ class Army {
         for (int i = 0; i != this.alive_soldiers.size(); i++) {
             System.out.println("Soldier " + i); //Debug tool
         }
+    }
+    public boolean isEmpty(){
+        if(alive_soldiers.isEmpty()){
+            return true;
+        }
+        return false;
     }
 
 
