@@ -116,9 +116,9 @@ class Knight extends Soldier implements AttackCommand{
         this.setPower(27);
         this.setHealth(130);
         this.setMovement(5);
-        this.setRange(2);
-        this.setX_position(x);
-        this.setY_position(y);
+        this.setRange(4);
+        this.setX_position(y);
+        this.setY_position(x);
     }
     @Override
     public void attack(Soldier enemy) {
@@ -129,8 +129,8 @@ class King extends Soldier implements AttackCommand{
 
 
     public King(Board board) {
-        this.setPower(15);
-        this.setHealth(300);
+        this.setPower(50);
+        this.setHealth(800);
         this.setMovement(0);
         this.setRange(2);
         this.setX_position(0);
@@ -145,10 +145,10 @@ class Ram extends Soldier{
     public Ram(int x, int y) {
         this.setPower(2*getMovement());
         this.setHealth(250);
-        this.setMovement(3);
+        this.setMovement(2);
         this.setRange(2);
-        this.setX_position(x);
-        this.setY_position(y);
+        this.setX_position(y);
+        this.setY_position(x);
         this.setDefender(false);
     }
 
@@ -166,8 +166,8 @@ class Catapult extends Soldier{
         this.setHealth(250);
         this.setMovement(2);
         this.setRange(15);
-        this.setX_position(x);
-        this.setY_position(y);
+        this.setX_position(y);
+        this.setY_position(x);
         this.setDefender(false);
     }
 
@@ -180,9 +180,9 @@ class Archer extends Soldier implements AttackCommand{
         this.setPower(17);
         this.setHealth(100);
         this.setMovement(6);
-        this.setRange(10);
-        this.setX_position(x);
-        this.setY_position(y);
+        this.setRange(15);
+        this.setX_position(y);
+        this.setY_position(x);
     }
     @Override
     public void attack(Soldier enemy) {
@@ -197,8 +197,8 @@ class Leader extends Soldier implements AttackCommand{
         this.setHealth(200);
         this.setMovement(5);
         this.setRange(2);
-        this.setX_position(x);
-        this.setY_position(y);
+        this.setX_position(y);
+        this.setY_position(x);
         this.auraRange = 5;
     }
     @Override
@@ -212,8 +212,8 @@ class Medic extends Soldier implements AttackCommand{
         this.setHealth(80);
         this.setMovement(6);
         this.setRange(3);
-        this.setX_position(x);
-        this.setY_position(y);
+        this.setX_position(y);
+        this.setY_position(x);
     }
     @Override
     public void attack(Soldier ally) {
@@ -225,28 +225,16 @@ class Horseman extends Soldier implements AttackCommand{
         this.setPower(37);
         this.setHealth(150);
         this.setMovement(10);
-        this.setRange(3);
-        this.setX_position(x);
-        this.setY_position(y);
+        this.setRange(6);
+        this.setX_position(y);
+        this.setY_position(x);
     }
     @Override
     public void attack(Soldier enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
 }
-class Healer extends Soldier{
-    public Healer(int x, int y) {
-        this.setPower(-20);
-        this.setHealth(80);
-        this.setMovement(6);
-        this.setRange(3);
-        this.setX_position(x);
-        this.setY_position(y);
-    }
-    public void attack(Soldier enemy) {
-        enemy.setHealth(enemy.getHealth()-this.getPower());
-    }
-}
+
 
 abstract class Field {
     private boolean blocks;
@@ -369,10 +357,10 @@ abstract class Board{
                 return boardType1(type,width,height);
 
             case 2:
-                return boardType1(type,width,height);
+                return boardType2(type,width,height);
 
             case 3:
-                return boardType1(type,width,height);
+                return boardType3(type,width,height);
 
             default:
                 System.out.println("Podaj numer od 1 do 3");
@@ -504,6 +492,7 @@ abstract class Board{
             int x = rand.nextInt(1,height-1);
             if(!(fields[x][y]instanceof Rocks)) fields[x][y] = new Mud(x,y);
         }
+        fields[height/4][2] = new Grass(height/4,2);
         return fields;
     }
 }
@@ -605,6 +594,9 @@ class Army {
                     alive_soldiers.add(a);
                 }
             }
+            for(int i = 0;i<alive_soldiers.size();i++){
+                alive_soldiers.get(i).setDefender(false);
+            }
         } else {
             for (int i = 0; i != number; i++) {
                 int roll = rand.nextInt(100);
@@ -620,31 +612,34 @@ class Army {
 
 
                 if (roll < threshold1) {
-                    int x = rand.nextInt(20);
-                    int y = rand.nextInt(Board.height);
+                    int y = rand.nextInt(20);
+                    int x = rand.nextInt(Board.height*3/4-3);
                     Soldier a = new Knight(x, y);
                     alive_soldiers.add(a);
                 } else if (roll < threshold2) {
-                    int x = rand.nextInt(20);
-                    int y = rand.nextInt(Board.height);
+                    int y = rand.nextInt(20);
+                    int x = rand.nextInt(Board.height*3/4-3);
                     Soldier a = new Archer(x, y);
                     alive_soldiers.add(a);
                 } else if (roll < threshold3) {
-                    int x = rand.nextInt(20);
-                    int y = rand.nextInt(Board.height);
+                    int y = rand.nextInt(20);
+                    int x = rand.nextInt(Board.height*3/4-3);
                     Soldier a = new Horseman(x, y);
                     alive_soldiers.add(a);
                 } else if (roll < threshold4) {
-                    int x = rand.nextInt(20);
-                    int y = rand.nextInt(Board.height);
+                    int y = rand.nextInt(20);
+                    int x = rand.nextInt(Board.height*3/4-3);
                     Soldier a = new Medic(x, y);
                     alive_soldiers.add(a);
                 } else {
-                    int x = rand.nextInt(20);
-                    int y = rand.nextInt(Board.height);
+                    int y = rand.nextInt(20);
+                    int x = rand.nextInt(Board.height*3/4-3);
                     Soldier a = new Leader(x, y);
                     alive_soldiers.add(a);
                 }
+            }
+            for(int i = 0;i<alive_soldiers.size();i++){
+                alive_soldiers.get(i).setDefender(true);
             }
         }
     }
