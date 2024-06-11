@@ -112,10 +112,14 @@ public class SimulationGUI extends JFrame {
                     label.setIcon(mudIcon);
                 } else if (field instanceof Rocks) {
                     label.setIcon(rocksIcon);
-                } else if (field instanceof Wall) {
+                } else if(field instanceof Wall&&((Wall) field).getHealth()>0) {
                     label.setIcon(wallIcon);
+                    System.out.println("hp="+((Wall) field).getHealth());
                 } else if (field instanceof Gate) {
                     label.setIcon(gateIcon);
+                }
+                else if(field instanceof Wall&&((Wall) field).getHealth()<=0){
+                    label.setIcon(grassIcon);
                 }
             }
         }
@@ -230,7 +234,7 @@ public class SimulationGUI extends JFrame {
 
         startButton.setEnabled(false);
         worker.execute();*/
-        attacker = new Army(false,100,5,board);
+        attacker = new Army(false,100,9,board);
         defender = new Army(true,150,5,board);
         SwingWorker<Void, String> worker = new SwingWorker<>() {
             @Override
@@ -249,11 +253,14 @@ public class SimulationGUI extends JFrame {
                         Soldier a = attacker.getAlive_soldiers().get(i);
                         System.out.println(a.getArmyType());
                         if (a instanceof Catapult) {
-                            moveCatapultTowardsWall(a);
-                            scanForWallOrGate(a);
+                            if(!scanForWallOrGate(a)){
+                                moveCatapultTowardsWall(a);
+                            }
+
                         } else if (a instanceof Ram) {
-                            moveRamTowardsGate(a);
-                            scanForWallOrGate(a);
+                            if(!scanForWallOrGate(a)){
+                                moveRamTowardsGate(a);
+                            }
 
                         } else if(a instanceof Medic){
 
@@ -317,9 +324,12 @@ public class SimulationGUI extends JFrame {
         for (Soldier enemy : enemies) {
             double distance = Math.sqrt(Math.pow(soldier.getX_position() - enemy.getX_position(), 2) +
                     Math.pow(soldier.getY_position() - enemy.getY_position(), 2));
-            if (distance <= soldier.getRange()){
-                soldier.attack(enemy);
-                return true;
+            if (distance <= soldier.getTriggerRange()){
+                if(distance<=soldier.getRange()){
+                    soldier.attack(enemy);
+                    return true;
+                }
+
             }
         }
         return false;

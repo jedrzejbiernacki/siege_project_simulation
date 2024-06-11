@@ -56,6 +56,7 @@ abstract class Soldier {
     public int x_position;
     public int y_position;
     private boolean defender;
+    private int triggerRange;
 
     protected void setHealth(int newHealth) {
         this.health = newHealth;
@@ -109,6 +110,12 @@ abstract class Soldier {
     public void attack(Field target){
 
     }
+    public int getTriggerRange(){
+        return this.triggerRange;
+    }
+    public void setTriggerRange(int triggerRange){
+        this.triggerRange = triggerRange;
+    }
 }
 
 class Knight extends Soldier implements AttackCommand{
@@ -119,6 +126,7 @@ class Knight extends Soldier implements AttackCommand{
         this.setRange(4);
         this.setX_position(y);
         this.setY_position(x);
+        this.setTriggerRange(25);
     }
     @Override
     public void attack(Soldier enemy) {
@@ -162,9 +170,9 @@ class Ram extends Soldier{
 }
 class Catapult extends Soldier{
     public Catapult(int x, int y) {
-        this.setPower(150);
+        this.setPower(400);
         this.setHealth(250);
-        this.setMovement(2);
+        this.setMovement(4);
         this.setRange(15);
         this.setX_position(y);
         this.setY_position(x);
@@ -183,6 +191,7 @@ class Archer extends Soldier implements AttackCommand{
         this.setRange(15);
         this.setX_position(y);
         this.setY_position(x);
+        this.setTriggerRange(25);
     }
     @Override
     public void attack(Soldier enemy) {
@@ -200,6 +209,7 @@ class Leader extends Soldier implements AttackCommand{
         this.setX_position(y);
         this.setY_position(x);
         this.auraRange = 5;
+        this.setTriggerRange(25);
     }
     @Override
     public void attack(Soldier enemy) {
@@ -214,6 +224,7 @@ class Medic extends Soldier implements AttackCommand{
         this.setRange(3);
         this.setX_position(y);
         this.setY_position(x);
+        this.setTriggerRange(25);
     }
     @Override
     public void attack(Soldier ally) {
@@ -228,6 +239,7 @@ class Horseman extends Soldier implements AttackCommand{
         this.setRange(6);
         this.setX_position(y);
         this.setY_position(x);
+        this.setTriggerRange(25);
     }
     @Override
     public void attack(Soldier enemy) {
