@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,6 +64,7 @@ public class SimulationGUI extends JFrame {
 
         boardPanel = new JPanel(new GridLayout(board.height, board.width));
         boardLabels = new JLabel[board.height][board.width];
+
         initializeBoard();
 
         startButton = new JButton("Start Simulation");
@@ -117,17 +119,23 @@ public class SimulationGUI extends JFrame {
                 JLabel label = boardLabels[i][j];
                 if (field instanceof Grass) {
                     label.setIcon(grassIcon);
+                    label.setBorder(null);
                 } else if (field instanceof Mud) {
                     label.setIcon(mudIcon);
+                    label.setBorder(null);
                 } else if (field instanceof Rocks) {
                     label.setIcon(rocksIcon);
+                    label.setBorder(null);
                 } else if(field instanceof Wall&&((Wall) field).getHealth()>0) {
                     label.setIcon(wallIcon);
+                    label.setBorder(null);
                 } else if (field instanceof Gate) {
                     label.setIcon(gateIcon);
+                    label.setBorder(null);
                 }
                 else if(field instanceof Wall&&((Wall) field).getHealth()<=0){
                     label.setIcon(grassIcon);
+                    label.setBorder(null);
                 }
             }
         }
@@ -219,37 +227,63 @@ public class SimulationGUI extends JFrame {
 
     private void updateSoldierPosition(Soldier soldier) {
         JLabel label = boardLabels[soldier.getY_position()][soldier.getX_position()];
-        if(soldier.getHealth() <= 0) {
+        Border attackerBorder = BorderFactory.createLineBorder(Color.RED, 1);
+        Border defenderBorder = BorderFactory.createLineBorder(Color.BLUE, 1);
+        if(soldier.getArmyType()){
+            if (soldier.getHealth() <= 0) {
+                Field field = board.fields[soldier.getY_position()][soldier.getX_position()];
+                if (field instanceof Grass) {
+                    label.setIcon(grassIcon);
+                    label.setBorder(null);
+                } else if (field instanceof Mud) {
+                    label.setIcon(mudIcon);
+                    label.setBorder(null);
+                }
+            } else if (soldier instanceof Knight) {
+                label.setIcon(knightIcon);
+            } else if (soldier instanceof Archer) {
+                label.setIcon(archerIcon);
+            } else if (soldier instanceof Catapult) {
+                label.setIcon(catapultIcon);
+            } else if (soldier instanceof King) {
+                label.setIcon(kingIcon);
+            } else if (soldier instanceof Ram) {
+                label.setIcon(ramIcon);
+            } else if (soldier instanceof Medic) {
+                label.setIcon(medicIcon);
+            } else if (soldier instanceof Leader) {
+                label.setIcon(leaderIcon);
+            } else if (soldier instanceof Horseman) {
+                label.setIcon(horsemanIcon);
+            }
+            label.setBorder(defenderBorder);
+        }
+        else{if (soldier.getHealth() <= 0) {
             Field field = board.fields[soldier.getY_position()][soldier.getX_position()];
             if (field instanceof Grass) {
                 label.setIcon(grassIcon);
             } else if (field instanceof Mud) {
                 label.setIcon(mudIcon);
             }
-        }
-        else if(soldier instanceof Knight){
-                label.setIcon(knightIcon);
-            }
-        else if(soldier instanceof Archer){
+        } else if (soldier instanceof Knight) {
+            label.setIcon(knightIcon);
+        } else if (soldier instanceof Archer) {
             label.setIcon(archerIcon);
-        }
-        else if(soldier instanceof Catapult){
+        } else if (soldier instanceof Catapult) {
             label.setIcon(catapultIcon);
-        }
-        else if(soldier instanceof King){
+        } else if (soldier instanceof King) {
             label.setIcon(kingIcon);
-        }
-        else if(soldier instanceof Ram){
+        } else if (soldier instanceof Ram) {
             label.setIcon(ramIcon);
-        }
-        else if(soldier instanceof Medic){
+        } else if (soldier instanceof Medic) {
             label.setIcon(medicIcon);
-        }
-        else if(soldier instanceof Leader){
+        } else if (soldier instanceof Leader) {
             label.setIcon(leaderIcon);
-        }
-        else if(soldier instanceof Horseman){
+        } else if (soldier instanceof Horseman) {
             label.setIcon(horsemanIcon);
+        }
+            label.setBorder(attackerBorder);
+
         }
     }
 
