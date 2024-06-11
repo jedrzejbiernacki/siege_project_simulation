@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -11,8 +12,8 @@ public class SimulationGUI extends JFrame {
     private final JPanel boardPanel;
     private final JButton startButton;
     private final JTextArea outputArea;
-    private Army defender;
-    private Army attacker;
+    private final Army defender;
+    private final Army attacker;
     private King king;
 
     private Catapult c;
@@ -30,12 +31,14 @@ public class SimulationGUI extends JFrame {
     private final ImageIcon leaderIcon;
     private final ImageIcon ramIcon;
     private final ImageIcon kingIcon;
+    private final JLabel statsLabel;
 
     public SimulationGUI() {
         setTitle("Simulation");
         setSize(1024,960);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
 
 
         grassIcon = loadImageIcon("grass.JPG");
@@ -55,6 +58,8 @@ public class SimulationGUI extends JFrame {
 
         };
         board.fields = board.boardType(1, 100, 100);
+        attacker = new Army(false,100,9,board);
+        defender = new Army(true,150,5,board);
 
         boardPanel = new JPanel(new GridLayout(board.height, board.width));
         boardLabels = new JLabel[board.height][board.width];
@@ -72,9 +77,13 @@ public class SimulationGUI extends JFrame {
         outputArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(outputArea);
 
+        statsLabel = new JLabel("Statistics:");
+        statsLabel.setPreferredSize(new Dimension(200, 100));
+
         add(boardPanel, BorderLayout.CENTER);
         add(startButton, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.SOUTH);
+        add(statsLabel, BorderLayout.EAST);
 
         setVisible(true);
     }
@@ -114,7 +123,6 @@ public class SimulationGUI extends JFrame {
                     label.setIcon(rocksIcon);
                 } else if(field instanceof Wall&&((Wall) field).getHealth()>0) {
                     label.setIcon(wallIcon);
-                    System.out.println("hp="+((Wall) field).getHealth());
                 } else if (field instanceof Gate) {
                     label.setIcon(gateIcon);
                 }
@@ -131,6 +139,82 @@ public class SimulationGUI extends JFrame {
         }
         boardPanel.revalidate();
         boardPanel.repaint();
+        updateStatsLabel();
+    }
+    private void updateStatsLabel() {
+        int totalDefenders = defender.getAlive_soldiers().size();
+        int totalAttackers = attacker.getAlive_soldiers().size();
+        int totalAliveDefenders = 0;
+        int totalAliveAttackers = 0;
+
+        int aliveDefenderKnights = 0;
+        int aliveDefenderArchers = 0;
+        int aliveDefenderCatapults = 0;
+        int aliveDefenderHorsemen = 0;
+        int aliveDefenderMedics = 0;
+        int aliveDefenderLeaders = 0;
+        int aliveDefenderRams = 0;
+        int aliveDefenderKings = 0;
+
+        int aliveAttackerKnights = 0;
+        int aliveAttackerArchers = 0;
+        int aliveAttackerCatapults = 0;
+        int aliveAttackerHorsemen = 0;
+        int aliveAttackerMedics = 0;
+        int aliveAttackerLeaders = 0;
+        int aliveAttackerRams = 0;
+        int aliveAttackerKings = 0;
+
+        for (Soldier soldier : defender.getAlive_soldiers()) {
+            if (soldier.getHealth() > 0) {
+                totalAliveDefenders++;
+                if (soldier instanceof Knight) aliveDefenderKnights++;
+                else if (soldier instanceof Archer) aliveDefenderArchers++;
+                else if (soldier instanceof Catapult) aliveDefenderCatapults++;
+                else if (soldier instanceof Horseman) aliveDefenderHorsemen++;
+                else if (soldier instanceof Medic) aliveDefenderMedics++;
+                else if (soldier instanceof Leader) aliveDefenderLeaders++;
+                else if (soldier instanceof Ram) aliveDefenderRams++;
+                else if (soldier instanceof King) aliveDefenderKings++;
+            }
+        }
+
+        for (Soldier soldier : attacker.getAlive_soldiers()) {
+            if (soldier.getHealth() > 0) {
+                totalAliveAttackers++;
+                if (soldier instanceof Knight) aliveAttackerKnights++;
+                else if (soldier instanceof Archer) aliveAttackerArchers++;
+                else if (soldier instanceof Catapult) aliveAttackerCatapults++;
+                else if (soldier instanceof Horseman) aliveAttackerHorsemen++;
+                else if (soldier instanceof Medic) aliveAttackerMedics++;
+                else if (soldier instanceof Leader) aliveAttackerLeaders++;
+                else if (soldier instanceof Ram) aliveAttackerRams++;
+                else if (soldier instanceof King) aliveAttackerKings++;
+            }
+        }
+
+        String statsText = "<html>Statistics:<br>"  +
+                "Alive Defenders: " + totalAliveDefenders + "<br>" +
+                " - Knights: " + aliveDefenderKnights + "<br>" +
+                " - Archers: " + aliveDefenderArchers + "<br>" +
+                " - Catapults: " + aliveDefenderCatapults + "<br>" +
+                " - Horsemen: " + aliveDefenderHorsemen + "<br>" +
+                " - Medics: " + aliveDefenderMedics + "<br>" +
+                " - Leaders: " + aliveDefenderLeaders + "<br>" +
+                " - Rams: " + aliveDefenderRams + "<br>" +
+                " - Kings: " + aliveDefenderKings + "<br>"  +
+                "Alive Attackers: " + totalAliveAttackers + "<br>" +
+                " - Knights: " + aliveAttackerKnights + "<br>" +
+                " - Archers: " + aliveAttackerArchers + "<br>" +
+                " - Catapults: " + aliveAttackerCatapults + "<br>" +
+                " - Horsemen: " + aliveAttackerHorsemen + "<br>" +
+                " - Medics: " + aliveAttackerMedics + "<br>" +
+                " - Leaders: " + aliveAttackerLeaders + "<br>" +
+                " - Rams: " + aliveAttackerRams + "<br>" +
+                " - Kings: " + aliveAttackerKings + "<br>" +
+                "</html>";
+
+        statsLabel.setText(statsText);
     }
 
     private void updateSoldierPosition(Soldier soldier) {
@@ -234,8 +318,7 @@ public class SimulationGUI extends JFrame {
 
         startButton.setEnabled(false);
         worker.execute();*/
-        attacker = new Army(false,100,9,board);
-        defender = new Army(true,150,5,board);
+
         SwingWorker<Void, String> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() {
@@ -263,8 +346,13 @@ public class SimulationGUI extends JFrame {
                             }
 
                         } else if(a instanceof Medic){
-
-                            if(!scanForEnemies(a,attacker.getAlive_soldiers())){
+                            List<Soldier> allays = new ArrayList<>();
+                            for(int j = 0;j<attacker.getAlive_soldiers().size();j++){
+                                if(j!=i){
+                                    allays.add(attacker.getAlive_soldiers().get(j));
+                                }
+                            }
+                            if(!scanForEnemies(a,allays)){
                                 moveSoldierTowardsEnemy(a, defender.getAlive_soldiers().get(0));
                             }
                         }
@@ -490,6 +578,60 @@ public class SimulationGUI extends JFrame {
         } else {
             throw new RuntimeException("Image file not found: " + fileName);
         }
+    }
+    private void getCountOfSoldier(){
+        int knightsA = 0;
+        int knightsD = 0;
+        int archersA = 0;
+        int archersD = 0;
+        int horsemanA = 0;
+        int horsemanD=0;
+        int medicA = 0;
+        int medicD = 0;
+        int catapult = 0;
+        int ram = 0;
+        int leaderA = 0;
+        int leaderD = 0;
+        for(int i = 0;i<defender.getAlive_soldiers().size();i++){
+            if(defender.getAlive_soldiers().get(i)instanceof Knight){
+                knightsD++;
+            }
+            else if(defender.getAlive_soldiers().get(i)instanceof Archer){
+                archersD++;
+            }
+            else if(defender.getAlive_soldiers().get(i)instanceof Leader){
+                leaderD++;
+            }
+            else if(defender.getAlive_soldiers().get(i)instanceof Medic){
+                medicD++;
+            }
+            else if(defender.getAlive_soldiers().get(i)instanceof Horseman){
+                horsemanD++;
+            }
+        }
+        for(int i = 0;i<attacker.getAlive_soldiers().size();i++){
+            if(attacker.getAlive_soldiers().get(i)instanceof Knight){
+                knightsD++;
+            }
+            else if(attacker.getAlive_soldiers().get(i)instanceof Archer){
+                archersD++;
+            }
+            else if(attacker.getAlive_soldiers().get(i)instanceof Leader){
+                leaderD++;
+            }
+            else if(attacker.getAlive_soldiers().get(i)instanceof Medic){
+                medicD++;
+            }
+            else if(attacker.getAlive_soldiers().get(i)instanceof Horseman){
+                horsemanD++;
+            } else if (attacker.getAlive_soldiers().get(i) instanceof Catapult) {
+                catapult++;
+            }
+            else if (attacker.getAlive_soldiers().get(i) instanceof Ram) {
+                ram++;
+            }
+        }
+
     }
 
     public static void main(String[] args) {

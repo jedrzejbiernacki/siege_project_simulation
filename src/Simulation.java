@@ -512,9 +512,11 @@ abstract class Board{
 
 class Army {
     private List<Soldier> alive_soldiers;
-
+    int medicCountA = 0;
+    int medicCountD=0;
 
     Army(boolean defenders, int number, int strength, Board board) {
+
         if (strength > 10 || strength < 1) {
             System.out.println("Strength number should be between 1 and 10!");
             System.exit(0);
@@ -594,10 +596,11 @@ class Army {
                     int x = (int) Math.floor( Math.random() * (100-0) + 0 );
                     Soldier a = new Horseman(x, y);
                     alive_soldiers.add(a);
-                } else if (roll < threshold4) {
+                } else if (roll < threshold4&&medicCountA!=1) {
                     int y = (int) Math.floor( Math.random() * (100-90) + 90 );
                     int x = (int) Math.floor( Math.random() * (100-0) + 0 );
                     Soldier a = new Medic(x, y);
+                    medicCountA++;
                     alive_soldiers.add(a);
                 } else {
                     int y = (int) Math.floor( Math.random() * (100-90) + 90 );
@@ -625,27 +628,29 @@ class Army {
 
                 if (roll < threshold1) {
                     int y = rand.nextInt(20);
-                    int x = rand.nextInt(Board.height*3/4-3);
+                    int x = rand.nextInt(3*board.getHeight()/4+1 - board.getHeight()/4)+ board.getHeight()/4;;
                     Soldier a = new Knight(x, y);
                     alive_soldiers.add(a);
                 } else if (roll < threshold2) {
                     int y = rand.nextInt(20);
-                    int x = rand.nextInt(Board.height*3/4-3);
+                    int x = rand.nextInt(3*board.getHeight()/4+1 - board.getHeight()/4)+ board.getHeight()/4;;
                     Soldier a = new Archer(x, y);
                     alive_soldiers.add(a);
                 } else if (roll < threshold3) {
                     int y = rand.nextInt(20);
-                    int x = rand.nextInt(Board.height*3/4-3);
+                    int x = rand.nextInt(3*board.getHeight()/4+1 - board.getHeight()/4)+ board.getHeight()/4;;
                     Soldier a = new Horseman(x, y);
                     alive_soldiers.add(a);
-                } else if (roll < threshold4) {
+                } else if (roll < threshold4&&medicCountD!=1) {
                     int y = rand.nextInt(20);
-                    int x = rand.nextInt(Board.height*3/4-3);
+                    int x = rand.nextInt(3*board.getHeight()/4+1 - board.getHeight()/4)+ board.getHeight()/4;;
                     Soldier a = new Medic(x, y);
+                    medicCountD++;
                     alive_soldiers.add(a);
+
                 } else {
                     int y = rand.nextInt(20);
-                    int x = rand.nextInt(Board.height*3/4-3);
+                    int x = rand.nextInt(3*board.getHeight()/4+1 - board.getHeight()/4)+ board.getHeight()/4;;
                     Soldier a = new Leader(x, y);
                     alive_soldiers.add(a);
                 }
