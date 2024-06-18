@@ -34,6 +34,7 @@ public class SimulationGUI extends JFrame {
     private final ImageIcon kingIcon;
     private final JLabel statsLabel;
 
+
     public SimulationGUI() {
         setTitle("Simulation");
         setSize(1024,960);
@@ -89,6 +90,7 @@ public class SimulationGUI extends JFrame {
 
         setVisible(true);
     }
+
 
     private void initializeBoard() {
         for (int i = 0; i < board.height; i++) {
@@ -225,6 +227,10 @@ public class SimulationGUI extends JFrame {
         statsLabel.setText(statsText);
     }
 
+    /**
+     *
+     * @param soldier
+     */
     private void updateSoldierPosition(Soldier soldier) {
         JLabel label = boardLabels[soldier.getY_position()][soldier.getX_position()];
         Border attackerBorder = BorderFactory.createLineBorder(Color.RED, 1);
@@ -436,12 +442,22 @@ public class SimulationGUI extends JFrame {
         }
 
 
-
-
-
+    /**
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
     private int calculateDistance(Soldier s1, Soldier s2) {
         return Math.abs(s1.getX_position() - s2.getX_position()) + Math.abs(s1.getY_position() - s2.getY_position());
     }
+
+    /**
+     *
+     * @param soldier
+     * @param enemies
+     * @return
+     */
     private boolean scanForEnemies(Soldier soldier,List<Soldier> enemies){
         for (Soldier enemy : enemies) {
             double distance = Math.sqrt(Math.pow(soldier.getX_position() - enemy.getX_position(), 2) +
@@ -457,6 +473,11 @@ public class SimulationGUI extends JFrame {
         return false;
     }
 
+    /**
+     *
+     * @param mover
+     * @param enemy
+     */
     private void moveSoldierTowardsEnemy(Soldier mover, Soldier enemy) {
         int currentX = mover.getX_position();
         int currentY = mover.getY_position();
@@ -504,7 +525,13 @@ public class SimulationGUI extends JFrame {
 
         updateBoard();
         }
-        private boolean scanForWallOrGate(Soldier soldier){
+
+    /**
+     *
+     * @param soldier
+     * @return
+     */
+    private boolean scanForWallOrGate(Soldier soldier){
         if(soldier instanceof Catapult) {
             for (int i = 0; i < soldier.getRange(); i++) {
                 Field field = board.fields[soldier.getY_position()][soldier.getX_position() - i];
@@ -525,6 +552,11 @@ public class SimulationGUI extends JFrame {
         }
         return false;
     }
+
+    /**
+     *
+     * @param catapult
+     */
         private void moveCatapultTowardsWall(Soldier catapult){
             int currentX = catapult.getX_position();
             int currentY = catapult.getY_position();
@@ -552,6 +584,11 @@ public class SimulationGUI extends JFrame {
             catapult.setY_position(currentY);
             updateBoard();
         }
+
+    /**
+     *
+     * @param catapult
+     */
     private void moveRamTowardsGate(Soldier catapult){
         int currentX = catapult.getX_position();
         int currentY = catapult.getY_position();
@@ -585,11 +622,23 @@ public class SimulationGUI extends JFrame {
     }
 
 
-
+    /**
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     private boolean isValidMove(int x, int y) {
         return x >= 0 && y >= 0 && x < board.height && y < board.width &&
                 !(board.fields[y][x] instanceof Wall) && !(board.fields[y][x] instanceof Rocks)&&!(board.fields[y][x] instanceof Gate)&&!isSoldier(x,y);
     }
+
+    /**
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     private boolean isSoldier(int x, int y){
         for(int i = 0;i<defender.getAlive_soldiers().size();i++){
             Soldier a = defender.getAlive_soldiers().get(i);
@@ -606,6 +655,11 @@ public class SimulationGUI extends JFrame {
         return false;
     }
 
+    /**
+     *
+     * @param fileName
+     * @return
+     */
     private ImageIcon loadImageIcon(String fileName) {
         URL imageURL = getClass().getResource(fileName);
         if (imageURL != null) {            return new ImageIcon(imageURL);
@@ -668,6 +722,10 @@ public class SimulationGUI extends JFrame {
 
     }
 
+    /**
+     * 
+     * @param args
+     */
     public static void main(String[] args) {
 
         /*SimulationGUI simulationGUI = new SimulationGUI();

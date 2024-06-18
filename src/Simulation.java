@@ -2,7 +2,13 @@ import java.util.*;
 
 import static java.lang.Math.sqrt;
 
+
+
 public class Simulation {
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         Horseman a = new Horseman(1,1); //Soldier 1
@@ -47,6 +53,7 @@ public class Simulation {
     }
 }
 
+
 abstract class Soldier {
     private int health;
     private int power;
@@ -58,61 +65,155 @@ abstract class Soldier {
     private boolean defender;
     private int triggerRange;
 
+    /**
+     *
+     * @param newHealth
+     */
     protected void setHealth(int newHealth) {
         this.health = newHealth;
     }
+
+    /**
+     *
+     * @param newPower
+     */
     protected void setPower(int newPower) {
         this.power = newPower;
     }
+
+    /**
+     *
+     * @param newMovement
+     */
     protected void setMovement(int newMovement) {
         this.movement = newMovement;
     }
+
+    /**
+     *
+     * @param defender
+     */
     protected void setDefender(boolean defender){
         this.defender = defender;
     }
+
+    /**
+     *
+     * @param newRange
+     */
     protected void setRange(int newRange) {
         this.range = newRange;
     }
+
+    /**
+     *
+     * @param newX_position
+     */
     protected void setX_position(int newX_position) {
         this.x_position = newX_position;
     }
+
+    /**
+     *
+     * @param newY_position
+     */
     protected void setY_position(int newY_position) {
         this.y_position = newY_position;
     }
+
+    /**
+     *
+     * @return
+     */
     protected int getHealth() {
         return this.health;
     }
+
+    /**
+     *
+     * @return
+     */
     protected int getPower() {
         return this.power;
     }
+
+    /**
+     *
+     * @return
+     */
     protected int getMovement() {
         return this.movement;
     }
+
+    /**
+     *
+     * @return
+     */
     protected int getRange() {
         return this.range;
     }
+
+    /**
+     *
+     * @return
+     */
     protected boolean getArmyType(){
         return this.defender;
     }
+
+    /**
+     *
+     * @return
+     */
     protected int getX_position() {
         return this.x_position;
     }
+
+    /**
+     *
+     * @return
+     */
     protected int getY_position() {
         return this.y_position;
     }
+
+    /**
+     *
+     * @return
+     */
     protected boolean isAlive() {
         return this.health > 0;
     }
 
+    /**
+     *
+     * @param target
+     */
+
     public void attack(Soldier target) {
 
     }
+
+    /**
+     *
+     * @param target
+     */
     public void attack(Field target){
 
     }
+
+    /**
+     *
+     * @return
+     */
     public int getTriggerRange(){
         return this.triggerRange;
     }
+
+    /**
+     *
+     * @param triggerRange
+     */
     public void setTriggerRange(int triggerRange){
         this.triggerRange = triggerRange;
     }
@@ -128,6 +229,11 @@ class Knight extends Soldier implements AttackCommand{
         this.setY_position(x);
         this.setTriggerRange(25);
     }
+
+    /**
+     *
+     * @param enemy
+     */
     @Override
     public void attack(Soldier enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
@@ -144,6 +250,11 @@ class King extends Soldier implements AttackCommand{
         this.setX_position(0);
         this.setY_position(board.getHeight()/2);
     }
+
+    /**
+     *
+     * @param enemy
+     */
     @Override
     public void attack(Soldier enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
@@ -160,10 +271,16 @@ class Ram extends Soldier{
         this.setDefender(false);
     }
 
+
+
     public void increase_movement() {
         this.setMovement(this.getMovement()+2);
     }
 
+    /**
+     *
+     * @param enemy
+     */
     public void attack(Gate enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
@@ -179,6 +296,10 @@ class Catapult extends Soldier{
         this.setDefender(false);
     }
 
+    /**
+     *
+     * @param enemy
+     */
     public void attack(Wall enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
     }
@@ -193,6 +314,11 @@ class Archer extends Soldier implements AttackCommand{
         this.setY_position(x);
         this.setTriggerRange(25);
     }
+
+    /**
+     *
+     * @param enemy
+     */
     @Override
     public void attack(Soldier enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
@@ -211,6 +337,11 @@ class Leader extends Soldier implements AttackCommand{
         this.auraRange = 5;
         this.setTriggerRange(25);
     }
+
+    /**
+     *
+     * @param enemy
+     */
     @Override
     public void attack(Soldier enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
@@ -226,6 +357,11 @@ class Medic extends Soldier implements AttackCommand{
         this.setY_position(x);
         this.setTriggerRange(25);
     }
+
+    /**
+     *
+     * @param ally
+     */
     @Override
     public void attack(Soldier ally) {
         ally.setHealth(ally.getHealth()-this.getPower());
@@ -241,6 +377,11 @@ class Horseman extends Soldier implements AttackCommand{
         this.setY_position(x);
         this.setTriggerRange(25);
     }
+
+    /**
+     *
+     * @param enemy
+     */
     @Override
     public void attack(Soldier enemy) {
         enemy.setHealth(enemy.getHealth()-this.getPower());
@@ -253,33 +394,78 @@ abstract class Field {
     private int x_position;
     private int y_position;
     private double movement_modifier;
+
+    /**
+     *
+     * @param blocks
+     */
     protected void setBlocks(boolean blocks) {
         this.blocks = blocks;
     }
+
+    /**
+     *
+     * @param x_position
+     */
     protected void setX_position(int x_position) {
         this.x_position = x_position;
     }
+
+    /**
+     *
+     * @param y_position
+     */
     protected void setY_position(int y_position) {
         this.y_position = y_position;
     }
+
+    /**
+     *
+     * @param modifier
+     */
     protected void setMovement_modifier(double modifier) {
         this.movement_modifier = modifier;
     }
+
+    /**
+     *
+     * @return
+     */
     protected int getX_position() {
         return this.x_position;
     }
+
+    /**
+     *
+     * @return
+     */
     protected int getY_position() {
         return this.y_position;
     }
+
+    /**
+     *
+     * @return
+     */
     protected boolean getBlocks() {
         return blocks;
     }
+
+    /**
+     *
+     * @return
+     */
     protected double getMovement_modifier() {
         return this.movement_modifier;
     }
 }
 
 class Rocks extends Field {
+    /**
+     *
+     * @param x
+     * @param y
+     */
     Rocks(int x, int y) {
         this.setBlocks(true);
         this.setX_position(x);
@@ -288,6 +474,11 @@ class Rocks extends Field {
     }
 }
 class Mud extends Field {
+    /**
+     *
+     * @param x
+     * @param y
+     */
     Mud(int x, int y) {
         this.setBlocks(false);
         this.setX_position(x);
@@ -296,6 +487,11 @@ class Mud extends Field {
     }
 }
 class Grass extends Field{
+    /**
+     *
+     * @param x
+     * @param y
+     */
     Grass(int x,int y){
         this.setBlocks(false);
         this.setX_position(x);
@@ -306,6 +502,11 @@ class Grass extends Field{
 class Gate extends Field{
     private int health;
 
+    /**
+     *
+     * @param x
+     * @param y
+     */
     Gate(int x,int y){
         this.setBlocks(true);
         this.setX_position(x);
@@ -313,9 +514,19 @@ class Gate extends Field{
         this.setMovement_modifier(0);
         this.setHealth(500);
     }
+
+    /**
+     *
+     * @param health
+     */
     public void setHealth(int health){
         this.health = health;
     }
+
+    /**
+     *
+     * @return
+     */
     public int getHealth(){
         return this.health;
     }
@@ -323,6 +534,11 @@ class Gate extends Field{
 class Wall extends Field{
     private int health;
 
+    /**
+     *
+     * @param x
+     * @param y
+     */
     Wall(int x,int y){
         this.setBlocks(true);
         this.setX_position(x);
@@ -330,9 +546,19 @@ class Wall extends Field{
         this.setMovement_modifier(0);
         this.setHealth(1500);
     }
+
+    /**
+     *
+     * @param health
+     */
     public void setHealth(int health){
         this.health = health;
     }
+
+    /**
+     *
+     * @return
+     */
     public int getHealth(){
         return this.health;
     }
@@ -344,6 +570,13 @@ abstract class Board{
     protected int type;
     protected Field[][] fields;
 
+    /**
+     *
+     * @param width
+     * @param height
+     * @param iterations
+     * @param type
+     */
     public Board(int width,int height,int iterations,int type){
         this.height=height;
         this.width=width;
@@ -351,13 +584,30 @@ abstract class Board{
         this.type=type;
         this.fields = new Field[width][height];
     }
+
+    /**
+     *
+     * @return
+     */
     public int getWidth(){
         return width;
     }
+
+    /**
+     *
+     * @return
+     */
     public int getHeight(){
         return height;
     }
 
+    /**
+     *
+     * @param type
+     * @param width
+     * @param height
+     * @return
+     */
     public Field[][] boardType(int type,int width,int height){
         if(width<100||height<100){
             System.out.println("Minimalne wymiary planszy to 100x100");
@@ -380,6 +630,14 @@ abstract class Board{
 
         }
     }
+
+    /**
+     *
+     * @param type
+     * @param width
+     * @param height
+     * @return
+     */
     public Field[][] initialize(int type,int width,int height){
         for(int i = 0;i<height;i++){
             for(int j = 0;j<width;j++){
@@ -388,6 +646,14 @@ abstract class Board{
         }
         return fields;
     }
+
+    /**
+     *
+     * @param type
+     * @param width
+     * @param height
+     * @return
+     */
     public Field[][] boardType1(int type,int width,int height){
         fields = initialize(type,width,height);
         Random rand = new Random();
@@ -431,6 +697,14 @@ abstract class Board{
 
         return fields;
     }
+
+    /**
+     *
+     * @param type
+     * @param width
+     * @param height
+     * @return
+     */
     public Field[][] boardType2(int type,int width,int height){
         fields = initialize(type,width,height);
         Random rand = new Random();
@@ -476,6 +750,14 @@ abstract class Board{
         }
         return fields;
     }
+
+    /**
+     *
+     * @param type
+     * @param width
+     * @param height
+     * @return
+     */
     public Field[][] boardType3(int type,int width,int height) {
         fields = initialize(type, width, height);
         Random rand = new Random();
@@ -515,6 +797,13 @@ class Army {
     int medicCountA = 0;
     int medicCountD=0;
 
+    /**
+     *
+     * @param defenders
+     * @param number
+     * @param strength
+     * @param board
+     */
     Army(boolean defenders, int number, int strength, Board board) {
 
         if (strength > 10 || strength < 1) {
@@ -661,7 +950,10 @@ class Army {
         }
     }
 
-
+    /**
+     *
+     * @return
+     */
     public List<Soldier> getAlive_soldiers() {
         return this.alive_soldiers;
     }
@@ -671,11 +963,18 @@ class Army {
         this.alive_soldiers.removeIf(soldier -> !soldier.isAlive());
     }
 
+
     public void check_army() {
         for (int i = 0; i != this.alive_soldiers.size(); i++) {
             System.out.println("Soldier " + i); //Debug tool
         }
     }
+
+
+    /**
+     *
+     * @return
+     */
     public boolean isEmpty(){
         if(alive_soldiers.isEmpty()){
             return true;
